@@ -19,11 +19,43 @@ Vaultide 是一个开源学习工作台。它把外部的 GitHub 项目、论文
   <img src="./product/vaultide-multispace-video/public/home.png" alt="Vaultide 学习工作台首页" width="920" />
 </p>
 
-## 宣传媒体
+## 产品功能导览：从问题到可复用知识
 
-| 从外部知识开始 | 从 Obsidian 项目开始 | 在知识空间中归纳 |
-| --- | --- | --- |
-| ![外部知识学习](./product/vaultide-multispace-video/public/external-learning.png) | ![Obsidian 内部学习](./product/vaultide-multispace-video/public/obsidian-learning.png) | ![Vaultide 多维知识空间](./product/vaultide-multispace-video/public/knowledge-space.png) |
+### 1. 用一个真实问题开始学习
+
+![Vaultide 首页：外部学习、Obsidian 学习与知识归纳入口](./product/vaultide-multispace-video/public/external-learning.png)
+
+输入想要理解的问题，或选择“学习外部新知识”“学习 Obsidian 笔记”“归纳已有知识”。同一个入口把资料检索、项目学习与后续沉淀连接起来。
+
+### 2. 把 Obsidian 笔记或项目文件夹变成学习对象
+
+![从 Obsidian 选择笔记或项目，并说明审查与回写步骤](./product/vaultide-multispace-video/public/obsidian-learning.png)
+
+选择范围、确认来源与学习目标后再进入课堂。原始笔记不会被覆盖；后续写回需要经过网页与 Obsidian 的双重确认。
+
+### 3. 在课堂中理解、练习与完成迁移任务
+
+![互动课堂：课程导入、讲解、播放控制和沉淀入口](./product/vaultide-multispace-video/public/classroom.png)
+
+课堂不是静态幻灯片：它把概念、来源证据、讲解、阶段查点与最终“迁移到新问题”的任务放在同一条学习路径中。
+
+### 4. 用主动练习把“看过”变成“会用”
+
+![学习完成与证据面板：主动回忆、费曼解释和迁移应用](./product/vaultide-multispace-video/public/active-learning.png)
+
+完成度不只由播放页数决定。主动回忆、费曼解释、迁移应用与复习任务会沉淀为掌握度证据，并驱动下一步学习建议。
+
+### 5. 审查后再写回 Obsidian
+
+![受控 Obsidian 回写：生成预览、网页批准、Obsidian 确认](./product/vaultide-multispace-video/public/safe-writeback.png)
+
+Vaultide 先生成可预览的学习记录，再进入受控回写队列。写回内容包括课程目标、来源链接、阶段进度与学习证据，避免静默修改你的原始资料。
+
+### 6. 在多维知识空间中归纳关系与缺口
+
+![多维知识空间：主题岛、逻辑链、来源流和时间演化](./product/vaultide-multispace-video/public/knowledge-space.png)
+
+归纳不只是生成总结。你可以从逻辑链、主题岛、来源流、时间演化四个透镜查看知识聚合、跨主题联系、可追溯证据与下一步学习方向。
 
 [![观看 Vaultide 知识学习闭环宣传片](./product/vaultide-multispace-video/public/hero-loop.png)](https://github.com/ZMS-PNG/Vaultide/releases/tag/v0.1.0-public-preview)
 
