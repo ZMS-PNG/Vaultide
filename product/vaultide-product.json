@@ -1,0 +1,29 @@
+{
+  "product": {
+    "name": "知洄",
+    "englishName": "Vaultide",
+    "fullName": "知洄 Vaultide",
+    "version": "0.6.6",
+    "category": "个人智能学习系统",
+    "tagline": "让每次学习，流回你的知识库",
+    "website": "https://openmaic-eight-eosin.vercel.app"
+  },
+  "components": {
+    "web": "知洄课堂",
+    "obsidianPlugin": {
+      "displayName": "Vaultide Learning Connector",
+      "compatibilityId": "openmaic-learning",
+      "managedRoot": "Vaultide"
+    }
+  },
+  "commands": {
+    "preview": "Preview active note as a SourceBundle",
+    "projectPreview": "Preview a project folder as a SourceBundle",
+    "writeback": "Check and apply Vaultide writebacks"
+  },
+  "attribution": {
+    "statement": "基于 OpenMAIC 构建，并通过本地连接器与 Obsidian 协同。",
+    "officialProduct": false,
+    "license": "MIT"
+  }
+}

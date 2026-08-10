@@ -1,0 +1,25 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm build",
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 300
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/v1/maintenance/source-retention",
+      "schedule": "17 3 * * *"
+    },
+    {
+      "path": "/api/v1/maintenance/knowledge-graph-refresh",
+      "schedule": "37 3 * * *"
+    },
+    {
+      "path": "/api/v1/maintenance/course-generation",
+      "schedule": "11 4 * * *"
+    }
+  ]
+}

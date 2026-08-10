@@ -1,0 +1,22 @@
+[
+  {
+    "id": "external-github",
+    "label": "外部 GitHub 项目",
+    "goal": "从权威仓库资料学习项目架构、数据流、实战方法、失败模式与迁移决策"
+  },
+  {
+    "id": "internal-obsidian-project",
+    "label": "Obsidian 内部项目",
+    "goal": "从完整项目文件夹学习整体结构、关键模块、当前进度、薄弱点与下一步验证"
+  },
+  {
+    "id": "external-paper",
+    "label": "外部最新论文",
+    "goal": "基于论文原文学习研究问题、方法、实验、局限、复现条件与跨场景迁移"
+  },
+  {
+    "id": "internal-document",
+    "label": "Obsidian 内部文章或文稿",
+    "goal": "从已有材料学习论证结构、核心知识、冲突证据、待验证问题与反刍任务"
+  }
+]

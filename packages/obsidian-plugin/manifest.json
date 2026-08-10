@@ -1,0 +1,9 @@
+{
+  "id": "openmaic-learning",
+  "name": "Vaultide Learning Connector",
+  "version": "1.0.0",
+  "minAppVersion": "1.11.4",
+  "description": "知洄 Vaultide 的本地知识连接器：发送已选择的笔记或项目文件夹，并安全回写学习记录、归纳索引与知洄总览。",
+  "author": "Vaultide Project",
+  "isDesktopOnly": false
+}

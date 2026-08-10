@@ -1,0 +1,8 @@
+output
+.playwright-cli
+.codex-runtime
+.next
+tmp
+test-results
+playwright-report
+blob-report

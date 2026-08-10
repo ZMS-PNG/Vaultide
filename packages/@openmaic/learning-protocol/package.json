@@ -1,0 +1,48 @@
+{
+  "name": "@openmaic/learning-protocol",
+  "version": "0.6.0",
+  "description": "Versioned, dependency-free contracts for OpenMAIC project learning integrations.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./schema/*": "./dist/schema/*"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "pnpm run clean && tsc -p tsconfig.json && node scripts/gen-schema.mjs",
+    "build:schema": "node scripts/gen-schema.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm run build"
+  },
+  "keywords": [
+    "openmaic",
+    "learning",
+    "obsidian",
+    "protocol",
+    "schema"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/THU-MAIC/OpenMAIC",
+    "directory": "packages/@openmaic/learning-protocol"
+  },
+  "devDependencies": {
+    "ts-json-schema-generator": "~2.4.0",
+    "typescript": "^5",
+    "vitest": "^4.1.8"
+  }
+}

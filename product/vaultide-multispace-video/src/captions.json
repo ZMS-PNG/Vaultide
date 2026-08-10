@@ -1,0 +1,79 @@
+[
+  {
+    "text": "资料越来越多，真正学会的却越来越少。",
+    "startMs": 0,
+    "endMs": 2740,
+    "timestampMs": 0,
+    "confidence": null
+  },
+  {
+    "text": "知洄把一次提问，变成目标、证据、课堂、验证、沉淀、归纳和复习。",
+    "startMs": 2833,
+    "endMs": 9593,
+    "timestampMs": 2833,
+    "confidence": null
+  },
+  {
+    "text": "学习外部新知识：检索论文、科研、前沿技术、官方文档和 GitHub。",
+    "startMs": 9667,
+    "endMs": 16667,
+    "timestampMs": 9667,
+    "confidence": null
+  },
+  {
+    "text": "保留权威来源，再生成互动课堂。",
+    "startMs": 16667,
+    "endMs": 18567,
+    "timestampMs": 16667,
+    "confidence": null
+  },
+  {
+    "text": "一份笔记，或整个项目文件夹，都能进入课堂。",
+    "startMs": 18633,
+    "endMs": 22600,
+    "timestampMs": 18633,
+    "confidence": null
+  },
+  {
+    "text": "原笔记始终保持只读。",
+    "startMs": 22600,
+    "endMs": 25413,
+    "timestampMs": 22600,
+    "confidence": null
+  },
+  {
+    "text": "闭卷回忆、费曼解释、迁移应用。主动练习才形成掌握证据。",
+    "startMs": 25500,
+    "endMs": 31360,
+    "timestampMs": 25500,
+    "confidence": null
+  },
+  {
+    "text": "网页先预览，Obsidian 最终确认。学习结果进入伴随笔记。",
+    "startMs": 31433,
+    "endMs": 37433,
+    "timestampMs": 31433,
+    "confidence": null
+  },
+  {
+    "text": "先提出一个归纳问题，汇总课堂、来源和掌握证据。",
+    "startMs": 37500,
+    "endMs": 42520,
+    "timestampMs": 37500,
+    "confidence": null
+  },
+  {
+    "text": "再用逻辑链、主题岛、来源流或时间演化，解释知识关系。",
+    "startMs": 42520,
+    "endMs": 47760,
+    "timestampMs": 42520,
+    "confidence": null
+  },
+  {
+    "text": "知洄。让每次学习，流回你的知识库。",
+    "startMs": 47833,
+    "endMs": 51483,
+    "timestampMs": 47833,
+    "confidence": null
+  }
+]
