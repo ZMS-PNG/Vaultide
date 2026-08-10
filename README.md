@@ -19,45 +19,77 @@ Vaultide 是一个开源学习工作台。它把外部的 GitHub 项目、论文
   <img src="./product/vaultide-multispace-video/public/home.png" alt="Vaultide 学习工作台首页" width="920" />
 </p>
 
-## 产品功能导览：从问题到可复用知识
+## 完整功能图册：每个核心环节都有真实界面
 
-### 1. 用一个真实问题开始学习
+下面的图片全部来自 Vaultide 已实现的产品界面，而不是概念图。它们按照实际使用顺序展示从学习目标到知识复用的完整闭环。
 
-![Vaultide 首页：外部学习、Obsidian 学习与知识归纳入口](./product/vaultide-multispace-video/public/external-learning.png)
+### 1. 定义目标，并选择学习入口
 
-输入想要理解的问题，或选择“学习外部新知识”“学习 Obsidian 笔记”“归纳已有知识”。同一个入口把资料检索、项目学习与后续沉淀连接起来。
+![Vaultide 首页：目标输入、外部学习、Obsidian 学习、归纳模式和完成标准](./product/vaultide-multispace-video/public/home-loop.png)
 
-### 2. 把 Obsidian 笔记或项目文件夹变成学习对象
+在同一个工作台写下要解决的问题，选择学习外部资料、Obsidian 内容，或以内外部资料共同学习；同时明确“学完能做什么”和可验证的完成标准。
 
-![从 Obsidian 选择笔记或项目，并说明审查与回写步骤](./product/vaultide-multispace-video/public/obsidian-learning.png)
+### 2. 从外部问题开始检索与学习
+
+![Vaultide 外部学习入口：问题输入、外部检索、来源选择和进入课堂](./product/vaultide-multispace-video/public/external-learning.png)
+
+对 GitHub 项目、论文、专利和技术文章，可以直接从问题发起学习。外部资料会进入来源审查，而不是把未经核验的搜索结果直接当作结论。
+
+### 3. 把 Obsidian 笔记或项目文件夹变成学习对象
+
+![从 Obsidian 选择笔记或项目，并说明范围审查与回写步骤](./product/vaultide-multispace-video/public/obsidian-learning.png)
 
 选择范围、确认来源与学习目标后再进入课堂。原始笔记不会被覆盖；后续写回需要经过网页与 Obsidian 的双重确认。
 
-### 3. 在课堂中理解、练习与完成迁移任务
+### 4. 在互动课堂中理解、练习与完成迁移任务
 
-![互动课堂：课程导入、讲解、播放控制和沉淀入口](./product/vaultide-multispace-video/public/classroom.png)
+![互动课堂：课程导入、讲解、播放控制、来源标签和沉淀入口](./product/vaultide-multispace-video/public/classroom.png)
 
 课堂不是静态幻灯片：它把概念、来源证据、讲解、阶段查点与最终“迁移到新问题”的任务放在同一条学习路径中。
 
-### 4. 用主动练习把“看过”变成“会用”
+### 5. 用主动练习把“看过”变成“会用”
 
 ![学习完成与证据面板：主动回忆、费曼解释和迁移应用](./product/vaultide-multispace-video/public/active-learning.png)
 
 完成度不只由播放页数决定。主动回忆、费曼解释、迁移应用与复习任务会沉淀为掌握度证据，并驱动下一步学习建议。
 
-### 5. 审查后再写回 Obsidian
+### 6. 根据证据规划下一步学习与反刍
+
+![知识归纳与学习导航：课程、知识点、外部引用、待强化课程和下一步学习建议](./product/vaultide-multispace-video/public/question-synthesis.png)
+
+系统将已完成课堂、来源、学习事件与掌握度汇总为学习导航：哪些需要验证、哪些适合复习、哪些问题值得继续深挖，都可以从这里重新进入课堂。
+
+### 7. 先生成学习记录预览，再决定是否沉淀
+
+![受控 Obsidian 回写预览：将收集的课程目标、来源、场景与测验进度写入学习记录](./product/vaultide-multispace-video/public/writeback.png)
+
+沉淀前会明确展示将收集哪些内容。学习记录与原始项目笔记分离，避免把答案、无关数据或未确认内容写入原文。
+
+### 8. 通过网页批准与 Obsidian 确认完成受控回写
 
 ![受控 Obsidian 回写：生成预览、网页批准、Obsidian 确认](./product/vaultide-multispace-video/public/safe-writeback.png)
 
-Vaultide 先生成可预览的学习记录，再进入受控回写队列。写回内容包括课程目标、来源链接、阶段进度与学习证据，避免静默修改你的原始资料。
+写回采用“预览 → 网页批准 → Obsidian 确认”的双端安全链路。课程目标、来源链接、阶段进度与学习证据进入独立 Vaultide 区域，原始资料保持可控。
 
-### 6. 在多维知识空间中归纳关系与缺口
+### 9. 按时间、来源、课程和知识板块重新生成归纳
 
-![多维知识空间：主题岛、逻辑链、来源流和时间演化](./product/vaultide-multispace-video/public/knowledge-space.png)
+![知识归纳与三维关系图：筛选归纳范围、来源类型、项目课堂、知识板块与时间](./product/vaultide-multispace-video/public/knowledge.png)
 
-归纳不只是生成总结。你可以从逻辑链、主题岛、来源流、时间演化四个透镜查看知识聚合、跨主题联系、可追溯证据与下一步学习方向。
+归纳不是一次性摘要。可以按时间、知识板块、来源、项目、课程和 Obsidian 标签筛选，重新生成面向当前问题的知识快照。
 
-[![观看 Vaultide 知识学习闭环宣传片](./product/vaultide-multispace-video/public/hero-loop.png)](https://github.com/ZMS-PNG/Vaultide/releases/tag/v0.1.0-public-preview)
+### 10. 在三维空间中看全局知识聚合
+
+![三维知识空间总览：知识流程、知识板块、学习证据和主题聚合](./product/vaultide-multispace-video/public/knowledge-all.png)
+
+三维图把 X 轴知识流程、Y 轴知识板块、Z 轴学习证据放进同一空间；主题聚合与关系连线用于发现跨课程、跨来源的连接和空白。
+
+### 11. 聚焦一个知识簇，追踪来源与学习证据
+
+![三维知识空间聚焦状态：选中知识簇并查看相关节点、来源与伴随笔记](./product/vaultide-multispace-video/public/knowledge-focus.png)
+
+点击知识簇后可回到相关课堂、原始来源与伴随笔记。三维图的目标不是装饰，而是帮助你定位“我已经掌握了什么、证据在哪里、下一步该学什么”。
+
+[![观看 Vaultide 知识学习闭环宣传片](./product/vaultide-multispace-video/public/home-loop.png)](https://github.com/ZMS-PNG/Vaultide/releases/tag/v0.1.0-public-preview)
 
 🎬 **产品宣传片（51 秒 / 静音版）**：[在线观看与下载](https://github.com/ZMS-PNG/Vaultide/releases/tag/v0.1.0-public-preview) · [直接下载 MP4](https://github.com/ZMS-PNG/Vaultide/releases/download/v0.1.0-public-preview/vaultide-learning-loop-silent.mp4) · 可编辑源工程位于 [`product/vaultide-multispace-video`](./product/vaultide-multispace-video)。
 
