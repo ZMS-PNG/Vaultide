@@ -1,0 +1,30 @@
+flowchart TB
+  EXT["外部知识\nGitHub · 论文 · 专利 · 技术文章"]
+  PLUGIN["Obsidian 插件\n选择笔记/项目 · 生成知识快照"]
+  INTAKE["学习对象与证据\n范围选择 · 来源审查 · 冻结快照"]
+  COURSE["高质量课堂\n结构化课程 · 质量验证 · 可恢复生成"]
+  LEARN["互动学习\n讲解 · 阶段查点 · 主动练习 · 迁移任务"]
+  REVIEW["记忆与复习\n掌握证据 · 薄弱点 · 遗忘趋势 · 到期任务"]
+  WRITE["受控沉淀\n学习记录预览 · 网页批准 · Obsidian 确认"]
+  SYNTH["知识归纳\n周期快照 · 时间/主题/来源筛选"]
+  SPACE["多维知识空间\n逻辑链 · 主题岛 · 来源流 · 时间演化"]
+
+  VAULT["Obsidian Vault\n项目 · 笔记 · 会议 · 文稿"]
+
+  EXT --> INTAKE
+  PLUGIN --> INTAKE
+  INTAKE --> COURSE --> LEARN --> REVIEW
+  REVIEW --> WRITE
+  WRITE -->|"只写入独立 Vaultide 区域"| VAULT
+  INTAKE --> SYNTH
+  LEARN --> SYNTH
+  REVIEW --> SYNTH
+  SYNTH --> SPACE
+  SPACE -->|"发现缺口，回到学习"| INTAKE
+
+  classDef source fill:#e9f5ff,stroke:#2b7de9,color:#17365d,stroke-width:2px;
+  classDef core fill:#f4edff,stroke:#7c3aed,color:#3f1d75,stroke-width:2px;
+  classDef outcome fill:#e9fbf5,stroke:#00a884,color:#075344,stroke-width:2px;
+  class EXT,PLUGIN,VAULT source;
+  class INTAKE,COURSE,LEARN,REVIEW,WRITE core;
+  class SYNTH,SPACE outcome;

@@ -15,6 +15,12 @@ Vaultide 是一个开源学习工作台。它把外部的 GitHub 项目、论文
 → 沉淀学习记录 → 归纳知识关系 → 回到 Obsidian 反刍复习
 ```
 
+## 一图看懂核心功能架构
+
+![Vaultide 核心功能架构：外部知识与 Obsidian 通过证据、课堂、复习、受控沉淀、归纳和多维知识空间形成闭环](./docs/assets/vaultide-core-architecture.png)
+
+外部资料与 Obsidian 只会以用户选择、可审查的知识快照进入学习流程；学习记录写回前必须经过预览、网页批准与 Obsidian 确认。完整可编辑图源见 [`docs/assets/vaultide-core-architecture.mmd`](./docs/assets/vaultide-core-architecture.mmd)。
+
 <p align="center">
   <img src="./product/vaultide-multispace-video/public/home.png" alt="Vaultide 学习工作台首页" width="920" />
 </p>
