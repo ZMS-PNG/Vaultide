@@ -41,49 +41,79 @@ Vaultide 是一个开源学习工作台。它把外部的 GitHub 项目、论文
 
 选择范围、确认来源与学习目标后再进入课堂。原始笔记不会被覆盖；后续写回需要经过网页与 Obsidian 的双重确认。
 
-### 4. 在互动课堂中理解、练习与完成迁移任务
+### 4. 清楚看见从网页学习到 Obsidian 写回的阶段
+
+![学习阶段导航：定义目标、进入课堂与写回 Obsidian 的状态和数量](./product/vaultide-multispace-video/public/journey-stage-navigator.png)
+
+右侧阶段导航把整个过程显式化：当前在哪一步、已经建立多少课堂、哪些成果等待写回都一目了然。它连接网页端学习体验与 Obsidian 中的知识沉淀，而不是让用户在两个工具之间猜测状态。
+
+### 5. 在互动课堂中理解、练习与完成迁移任务
 
 ![互动课堂：课程导入、讲解、播放控制、来源标签和沉淀入口](./product/vaultide-multispace-video/public/classroom.png)
 
 课堂不是静态幻灯片：它把概念、来源证据、讲解、阶段查点与最终“迁移到新问题”的任务放在同一条学习路径中。
 
-### 5. 用主动练习把“看过”变成“会用”
+### 6. 用主动练习把“看过”变成“会用”
 
 ![学习完成与证据面板：主动回忆、费曼解释和迁移应用](./product/vaultide-multispace-video/public/active-learning.png)
 
 完成度不只由播放页数决定。主动回忆、费曼解释、迁移应用与复习任务会沉淀为掌握度证据，并驱动下一步学习建议。
 
-### 6. 根据证据规划下一步学习与反刍
+### 7. 用遗忘曲线和薄弱点安排当天复习
+
+![记忆与复习侧栏：今日复习计划、遗忘曲线、薄弱点和下一步任务](./product/vaultide-multispace-video/public/memory-desk-forgetting-curve.png)
+
+“记忆与复习”不只是一个课程列表。它汇总到期知识点、薄弱知识点、预计遗忘趋势与建议学习时长；遗忘曲线用于安排复习优先级，不冒充生理或认知测量结果。
+
+### 8. 查看复习任务与学习系统健康状态
+
+![记忆与复习任务队列与维护状态：到期复习、掌握度、证据数量和关键流程状态](./product/vaultide-multispace-video/public/memory-desk-review-queue.png)
+
+每项复习任务都保留关联知识点、掌握度和证据数量；课堂生成、知识归纳、Obsidian 回写及外部来源的状态也会分开呈现，避免一个问题掩盖整条学习链路。
+
+### 9. 根据证据规划下一步学习与反刍
 
 ![知识归纳与学习导航：课程、知识点、外部引用、待强化课程和下一步学习建议](./product/vaultide-multispace-video/public/question-synthesis.png)
 
 系统将已完成课堂、来源、学习事件与掌握度汇总为学习导航：哪些需要验证、哪些适合复习、哪些问题值得继续深挖，都可以从这里重新进入课堂。
 
-### 7. 先生成学习记录预览，再决定是否沉淀
+### 10. 先生成学习记录预览，再决定是否沉淀
 
 ![受控 Obsidian 回写预览：将收集的课程目标、来源、场景与测验进度写入学习记录](./product/vaultide-multispace-video/public/writeback.png)
 
 沉淀前会明确展示将收集哪些内容。学习记录与原始项目笔记分离，避免把答案、无关数据或未确认内容写入原文。
 
-### 8. 通过网页批准与 Obsidian 确认完成受控回写
+### 11. 通过网页批准与 Obsidian 确认完成受控回写
 
 ![受控 Obsidian 回写：生成预览、网页批准、Obsidian 确认](./product/vaultide-multispace-video/public/safe-writeback.png)
 
 写回采用“预览 → 网页批准 → Obsidian 确认”的双端安全链路。课程目标、来源链接、阶段进度与学习证据进入独立 Vaultide 区域，原始资料保持可控。
 
-### 9. 按时间、来源、课程和知识板块重新生成归纳
+### 12. 为项目设置周期性归纳计划
+
+![周期归纳计划：按项目、时间、知识板块和 Obsidian 标签筛选，并设置每周自动归纳](./product/vaultide-multispace-video/public/scheduled-synthesis-plan.png)
+
+可以为一个项目设定每周归纳计划。计划只处理新增加或发生变化的学习证据；生成的归纳快照仍然遵循单独确认后才回写 Obsidian 的规则。
+
+### 13. 保留可追溯的归纳快照与历史版本
+
+![周期归纳快照：课程、知识点、关系、已验证快照、核心结论与历史归纳](./product/vaultide-multispace-video/public/published-synthesis-snapshot.png)
+
+每次归纳都记录课程、知识点、关系、证据覆盖和历史版本。这样“知识归纳”不是覆盖式总结，而是可以按时间回看、比较和继续扩展的知识资产。
+
+### 14. 按时间、来源、课程和知识板块重新生成归纳
 
 ![知识归纳与三维关系图：筛选归纳范围、来源类型、项目课堂、知识板块与时间](./product/vaultide-multispace-video/public/knowledge.png)
 
 归纳不是一次性摘要。可以按时间、知识板块、来源、项目、课程和 Obsidian 标签筛选，重新生成面向当前问题的知识快照。
 
-### 10. 在三维空间中看全局知识聚合
+### 15. 在三维空间中看全局知识聚合
 
 ![三维知识空间总览：知识流程、知识板块、学习证据和主题聚合](./product/vaultide-multispace-video/public/knowledge-all.png)
 
 三维图把 X 轴知识流程、Y 轴知识板块、Z 轴学习证据放进同一空间；主题聚合与关系连线用于发现跨课程、跨来源的连接和空白。
 
-### 11. 聚焦一个知识簇，追踪来源与学习证据
+### 16. 聚焦一个知识簇，追踪来源与学习证据
 
 ![三维知识空间聚焦状态：选中知识簇并查看相关节点、来源与伴随笔记](./product/vaultide-multispace-video/public/knowledge-focus.png)
 
