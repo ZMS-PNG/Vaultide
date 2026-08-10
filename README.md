@@ -4,12 +4,33 @@
 
 Vaultide 是一个开源学习工作台。它把外部的 GitHub 项目、论文、专利与技术文章，以及你在 Obsidian 中已有的项目、笔记、会议记录和文稿，组织为**带来源证据的互动学习路径**。
 
+<p align="center">
+  <img src="./public/brand/vaultide-logo-horizontal.png" alt="Vaultide 知洄" width="360" />
+</p>
+
 它不是只生成一份总结，而是形成一个完整闭环：
 
 ```text
 选择学习对象 → 审查来源与证据 → 构建互动课堂 → 练习与阶段查点
 → 沉淀学习记录 → 归纳知识关系 → 回到 Obsidian 反刍复习
 ```
+
+<p align="center">
+  <img src="./public/brand/vaultide-knowledge-loop-hero-v2.png" alt="Vaultide 知识学习闭环" width="920" />
+</p>
+
+## 宣传媒体
+
+| 从外部知识开始 | 从 Obsidian 项目开始 | 在知识空间中归纳 |
+| --- | --- | --- |
+| ![外部知识学习](./product/vaultide-multispace-video/public/external-learning.png) | ![Obsidian 内部学习](./product/vaultide-multispace-video/public/obsidian-learning.png) | ![Vaultide 多维知识空间](./product/vaultide-multispace-video/public/knowledge-space.png) |
+
+🎬 **产品宣传片**：视频工程和真人配音素材位于 [`product/vaultide-multispace-video`](./product/vaultide-multispace-video)。成片发布后将在此处提供 GitHub Release 观看链接。
+
+## 建立在 OpenMAIC × Obsidian 之上
+
+- [**OpenMAIC**](https://github.com/THU-MAIC/OpenMAIC) 提供多智能体沉浸式学习的开源基础；Vaultide 在此基础上延展为面向长期学习的证据、质量、进度和知识沉淀工作流。
+- [**Obsidian**](https://obsidian.md/) 是以本地 Markdown 笔记为核心的知识库工具；Vaultide 通过伴随笔记和审查式写回，让学习成果回到用户自己可掌控的知识库。
 
 ## Vaultide 能解决什么
 
