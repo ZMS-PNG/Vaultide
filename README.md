@@ -16,7 +16,7 @@ Vaultide 是一个开源学习工作台。它把外部的 GitHub 项目、论文
 ```
 
 <p align="center">
-  <img src="./public/brand/vaultide-knowledge-loop-hero-v2.png" alt="Vaultide 知识学习闭环" width="920" />
+  <img src="./product/vaultide-multispace-video/public/home.png" alt="Vaultide 学习工作台首页" width="920" />
 </p>
 
 ## 宣传媒体
@@ -27,7 +27,7 @@ Vaultide 是一个开源学习工作台。它把外部的 GitHub 项目、论文
 
 [![观看 Vaultide 知识学习闭环宣传片](./product/vaultide-multispace-video/public/hero-loop.png)](https://github.com/ZMS-PNG/Vaultide/releases/tag/v0.1.0-public-preview)
 
-🎬 **产品宣传片（51 秒 / 真人配音）**：[在线观看与下载](https://github.com/ZMS-PNG/Vaultide/releases/tag/v0.1.0-public-preview) · [直接下载 MP4](https://github.com/ZMS-PNG/Vaultide/releases/download/v0.1.0-public-preview/vaultide-learning-loop.mp4) · 可编辑源工程位于 [`product/vaultide-multispace-video`](./product/vaultide-multispace-video)。
+🎬 **产品宣传片（51 秒 / 静音版）**：[在线观看与下载](https://github.com/ZMS-PNG/Vaultide/releases/tag/v0.1.0-public-preview) · [直接下载 MP4](https://github.com/ZMS-PNG/Vaultide/releases/download/v0.1.0-public-preview/vaultide-learning-loop-silent.mp4) · 可编辑源工程位于 [`product/vaultide-multispace-video`](./product/vaultide-multispace-video)。
 
 ## 建立在 OpenMAIC × Obsidian 之上
 
