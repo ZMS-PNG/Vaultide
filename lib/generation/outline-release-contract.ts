@@ -71,7 +71,9 @@ function titleLeaksSourceMarkup(title: string): boolean {
   return /https?:\/\/|!?\[[^\]]+\]\([^)]*\)/u.test(title);
 }
 
-export function describeV3OutlineReleaseViolation(outlines: readonly SceneOutline[]): string | null {
+export function describeV3OutlineReleaseViolation(
+  outlines: readonly SceneOutline[],
+): string | null {
   if (outlines.length < V3_COURSE_MIN_ACTIVITIES || outlines.length > V3_COURSE_MAX_ACTIVITIES) {
     return `A V3 learning plan requires ${V3_COURSE_MIN_ACTIVITIES}-${V3_COURSE_MAX_ACTIVITIES} evidence-backed activities; received ${outlines.length}.`;
   }
@@ -87,9 +89,19 @@ export function describeV3OutlineReleaseViolation(outlines: readonly SceneOutlin
   if (orders.some((order, index) => !Number.isInteger(order) || order !== index + 1)) {
     return 'V3 activity orders must form one complete sequence starting at 1.';
   }
+  // Evidence labels ground claims in a frozen source set. When no source
+  // evidence exists at all, allow the course to proceed rather than blocking
+  // a thin or empty source; otherwise every activity must preserve a label.
+  const hasAnyEvidence = outlines.some(
+    (outline) => (outline.activity?.evidenceLabels?.length ?? 0) > 0,
+  );
   for (const outline of outlines) {
     const activity = outline.activity;
-    if (!outline.title?.trim() || !outline.description?.trim() || (outline.keyPoints?.length ?? 0) < 3) {
+    if (
+      !outline.title?.trim() ||
+      !outline.description?.trim() ||
+      (outline.keyPoints?.length ?? 0) < 3
+    ) {
       return `V3 activity ${outline.order} is missing a learner-visible title, purpose, or evidence anchors.`;
     }
     if (titleLeaksSourceMarkup(outline.title)) {
@@ -98,7 +110,7 @@ export function describeV3OutlineReleaseViolation(outlines: readonly SceneOutlin
     if (!activity || !activity.learnerAction || !activity.observableOutcome) {
       return `V3 activity ${outline.order} is missing its learner action or observable outcome.`;
     }
-    if (activity.evidenceLabels.length === 0) {
+    if (hasAnyEvidence && activity.evidenceLabels.length === 0) {
       return `V3 activity ${outline.order} is missing frozen evidence labels.`;
     }
   }

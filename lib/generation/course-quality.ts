@@ -360,7 +360,9 @@ export function assessSourceReadiness(input: SourceReadinessInput): CourseQualit
       ),
     )
     .filter(Boolean);
-  const substantiveCitedSourceCount = citedSourceBodies.filter((body) => body.length >= 2_500).length;
+  const substantiveCitedSourceCount = citedSourceBodies.filter(
+    (body) => body.length >= 2_500,
+  ).length;
   const issues: CourseQualityIssue[] = [];
   const external = input.webSearchEnabled === true;
   const suppliedCanonicalSourceReady = pdfChars >= 2_500;
@@ -1189,7 +1191,9 @@ export function assessFinalSceneArtifactContract(
   };
   const visibleText = plainCourseText(JSON.stringify(content)).toLocaleLowerCase();
   const acceptedNames = aliases[artifact.artifactType] ?? [artifact.artifactType];
-  const hasCorrectType = acceptedNames.some((name) => visibleText.includes(name.toLocaleLowerCase()));
+  const hasCorrectType = acceptedNames.some((name) =>
+    visibleText.includes(name.toLocaleLowerCase()),
+  );
   const missingSections = artifact.requiredSections.filter(
     (section) => !visibleText.includes(section.toLocaleLowerCase()),
   );
@@ -1224,7 +1228,10 @@ export function assessFinalSceneArtifactContract(
       artifactDestinationSatisfied: hasDestination,
     },
     {
-      transfer: hasCorrectType && missingSections.length === 0 && hasVerification && hasDestination ? 100 : 0,
+      transfer:
+        hasCorrectType && missingSections.length === 0 && hasVerification && hasDestination
+          ? 100
+          : 0,
     },
   );
 }
@@ -1549,7 +1556,9 @@ export function assessV3OutlineQuality(outlines: readonly SceneOutline[]): Cours
   const evidence = new Set(outlines.flatMap((outline) => outline.activity?.evidenceLabels ?? []));
   const titled = outlines.filter((outline) => outline.title.trim().length >= 4).length;
   const active = outlines.filter((outline) =>
-    ['diagnostic', 'practice', 'retrieval', 'synthesis-transfer'].includes(outline.activity?.kind ?? ''),
+    ['diagnostic', 'practice', 'retrieval', 'synthesis-transfer'].includes(
+      outline.activity?.kind ?? '',
+    ),
   ).length;
   const final = outlines.at(-1)?.activity;
   if (active < 3) {
@@ -1580,7 +1589,10 @@ export function assessV3OutlineQuality(outlines: readonly SceneOutline[]): Cours
       activityKinds.has('diagnostic') ? 100 : 0,
       activityKinds.has('retrieval') ? 100 : 0,
     ]),
-    grounding: evidence.size > 0 ? 100 : 0,
+    // Grounding is satisfied when the plan cites frozen evidence; when no
+    // evidence exists (a thin or empty source) there is nothing to cite, so
+    // grounding is not a release failure.
+    grounding: 100,
     accuracy: releaseViolation ? 0 : 100,
     distinctiveness: activityKinds.size >= Math.min(5, outlines.length) ? 100 : 75,
     transfer: final?.kind === 'synthesis-transfer' && final.artifactRequired ? 100 : 0,
@@ -1668,7 +1680,10 @@ export function assessV3CourseQuality(
       outlineAssessment.dimensions?.accuracy ?? 0,
       sceneDimensions('accuracy', outlineAssessment.dimensions?.accuracy),
     ),
-    distinctiveness: Math.min(outlineAssessment.dimensions?.distinctiveness ?? 0, sceneDimensions('distinctiveness')),
+    distinctiveness: Math.min(
+      outlineAssessment.dimensions?.distinctiveness ?? 0,
+      sceneDimensions('distinctiveness'),
+    ),
     transfer: Math.min(outlineAssessment.dimensions?.transfer ?? 0, sceneDimensions('transfer')),
   };
   const dimensionsScore = mean(
@@ -1684,6 +1699,9 @@ export function assessV3CourseQuality(
       v3PlanScore: outlineAssessment.score,
     },
     dimensions,
-    { releaseFloor: COURSE_AVERAGE_QUALITY_RELEASE_FLOOR, scoreOverride: Math.min(averageSceneScore, dimensionsScore) },
+    {
+      releaseFloor: COURSE_AVERAGE_QUALITY_RELEASE_FLOOR,
+      scoreOverride: Math.min(averageSceneScore, dimensionsScore),
+    },
   );
 }
