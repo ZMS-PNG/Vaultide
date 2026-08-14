@@ -78,8 +78,7 @@ export function assessCoursePlanningPreflight(
       ? Math.max(0, Math.floor(input.sourceContextExpectedChars))
       : 0;
   const externalEvidenceMode = resolveExternalEvidenceMode(input.requirements);
-  const externalEvidenceStatus =
-    input.requirements.externalEvidenceStatus ?? 'not-requested';
+  const externalEvidenceStatus = input.requirements.externalEvidenceStatus ?? 'not-requested';
   const sourceAssessment = assessSourceReadiness({
     pdfText: input.documentText,
     researchContext: input.researchText,
@@ -119,8 +118,7 @@ export function assessCoursePlanningPreflight(
         'EXTERNAL_EVIDENCE_UNAVAILABLE',
         'blocker',
         '本次学习要求外部权威证据，但检索未成功',
-        input.requirements.externalEvidenceWarning ||
-          '没有取得可审计的官方、原始或权威来源。',
+        input.requirements.externalEvidenceWarning || '没有取得可审计的官方、原始或权威来源。',
         '检查 Tavily/Brave 配置，提供可信直达链接，或把外部证据改为“补充资料”。',
       ),
     );
@@ -151,10 +149,10 @@ export function assessCoursePlanningPreflight(
     issues.push(
       issue(
         'SOURCE_MATERIAL_TOO_SHALLOW',
-        'blocker',
-        '资料深度不足以生成高质量课堂',
-        describeQualityIssues(sourceAssessment) || '有效资料不足，无法形成可审计的完整课程。',
-        '补充原文、完整论文、官方文档或更多项目核心文件后重新审查来源。',
+        'warning',
+        '资料深度偏浅',
+        describeQualityIssues(sourceAssessment) || '有效资料偏少，课堂将尽力生成并标注来源不足。',
+        '可以继续生成；如需更强的来源支撑，可补充原文、完整论文、官方文档或更多项目核心文件后重新审查。',
       ),
     );
   }

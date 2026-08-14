@@ -73,18 +73,19 @@ describe('course planning preflight', () => {
     );
   });
 
-  it('rejects shallow material with an actionable recovery instruction', () => {
+  it('allows shallow material with a warning instead of blocking generation', () => {
     const result = assessCoursePlanningPreflight({
       requirements: { requirement: '学习这个项目' },
       documentText: 'README: demo',
     });
 
-    expect(result.ready).toBe(false);
+    expect(result.ready).toBe(true);
     expect(result.issues).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           code: 'SOURCE_MATERIAL_TOO_SHALLOW',
-          recovery: expect.stringContaining('补充'),
+          severity: 'warning',
+          recovery: expect.stringContaining('继续生成'),
         }),
       ]),
     );
