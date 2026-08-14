@@ -20,7 +20,7 @@ function outline(order: number, type: SceneOutline['type'], title: string): Scen
 }
 
 describe('normalizeQualityFirstOutlines', () => {
-  it('turns a 70%-interactive technical course into a balanced learning sequence', () => {
+  it('keeps a hands-on, interactive-first course interactive', () => {
     const result = normalizeQualityFirstOutlines([
       outline(1, 'slide', 'Introduction'),
       outline(2, 'interactive', 'Architecture'),
@@ -37,29 +37,27 @@ describe('normalizeQualityFirstOutlines', () => {
     expect(result).toHaveLength(10);
     expect(result[0].type).toBe('slide');
     expect(result[9].type).toBe('slide');
-    expect(result.filter((item) => item.type === 'interactive').length).toBeLessThanOrEqual(4);
-    expect(result.filter((item) => item.type === 'slide').length).toBeGreaterThanOrEqual(5);
+    // Interactive scenes are no longer flattened to slides.
+    expect(result.filter((item) => item.type === 'interactive')).toHaveLength(6);
+    // A recall quiz is still injected when the model produced none.
     expect(result.some((item) => item.type === 'quiz')).toBe(true);
-
-    let streak = 0;
-    for (const item of result) {
-      streak = item.type === 'interactive' ? streak + 1 : 0;
-      expect(streak).toBeLessThanOrEqual(2);
-    }
   });
 
-  it('removes widget-only fields when an excess interaction becomes a slide', () => {
-    const result = normalizeQualityFirstOutlines(
-      Array.from({ length: 8 }, (_, index) =>
-        outline(index + 1, index === 0 || index === 7 ? 'slide' : 'interactive', `Topic ${index}`),
-      ),
-    );
-    const converted = result.find(
-      (item) => item.type === 'slide' && item.id !== 'scene-1' && item.id !== 'scene-8',
-    );
+  it('removes widget-only fields when an opening or closing interactive scene becomes a slide', () => {
+    const result = normalizeQualityFirstOutlines([
+      outline(1, 'interactive', 'Opening simulation'),
+      outline(2, 'slide', 'Context'),
+      outline(3, 'slide', 'Mechanism'),
+      outline(4, 'slide', 'Worked example'),
+      outline(5, 'slide', 'Limitations'),
+      outline(6, 'interactive', 'Closing simulation'),
+    ]);
 
-    expect(converted).toBeDefined();
-    expect(converted?.widgetType).toBeUndefined();
-    expect(converted?.widgetOutline).toBeUndefined();
+    expect(result[0].type).toBe('slide');
+    expect(result[0].widgetType).toBeUndefined();
+    expect(result[0].widgetOutline).toBeUndefined();
+    expect(result[5].type).toBe('slide');
+    expect(result[5].widgetType).toBeUndefined();
+    expect(result[5].widgetOutline).toBeUndefined();
   });
 });

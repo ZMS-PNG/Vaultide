@@ -63,11 +63,15 @@ function convertOutlineToRecallQuiz(outline: SceneOutline): SceneOutline {
 }
 
 /**
- * Keep ordinary courses instructionally balanced and reliable.
+ * Normalize a model-generated outline for release without forcing a
+ * slide-heavy distribution.
  *
- * The former Ultra prompt forced 70% interactive scenes. On technical projects
- * that produced long runs of expensive HTML simulations, while crowding out
- * explanations, evidence and retrieval practice.
+ * The opening scene stays a slide for orientation and the closing scene stays
+ * a slide for synthesis and transfer. Other scenes keep their model-chosen
+ * type so interactive-first courses retain their hands-on richness (matching
+ * OpenMAIC's Deep Interactive Mode). Evidence grounding is expressed through
+ * scene descriptions, key points, and teacher guidance rather than by
+ * converting interactive scenes into slides.
  */
 export function normalizeQualityFirstOutlines(outlines: SceneOutline[]): SceneOutline[] {
   if (outlines.length === 0) return outlines;
@@ -79,9 +83,7 @@ export function normalizeQualityFirstOutlines(outlines: SceneOutline[]): SceneOu
 
   normalized[0] = convertOutlineToSlide(normalized[0]);
   if (normalized.length > 1) {
-    normalized[normalized.length - 1] = convertOutlineToSlide(
-      normalized[normalized.length - 1],
-    );
+    normalized[normalized.length - 1] = convertOutlineToSlide(normalized[normalized.length - 1]);
   }
 
   if (normalized.length >= 6 && !normalized.some((outline) => outline.type === 'quiz')) {
@@ -99,32 +101,6 @@ export function normalizeQualityFirstOutlines(outlines: SceneOutline[]): SceneOu
       }
     }
     if (candidate >= 0) normalized[candidate] = convertOutlineToRecallQuiz(normalized[candidate]);
-  }
-
-  const maxInteractive = Math.max(1, Math.min(4, Math.floor(normalized.length * 0.4)));
-  let interactiveCount = 0;
-  let consecutiveInteractive = 0;
-  for (let index = 0; index < normalized.length; index++) {
-    const outline = normalized[index];
-    if (outline.type !== 'interactive') {
-      consecutiveInteractive = 0;
-      continue;
-    }
-    if (interactiveCount >= maxInteractive || consecutiveInteractive >= 2) {
-      normalized[index] = convertOutlineToSlide(outline);
-      consecutiveInteractive = 0;
-      continue;
-    }
-    interactiveCount++;
-    consecutiveInteractive++;
-  }
-
-  const minimumSlides = Math.ceil(normalized.length * 0.45);
-  let slideCount = normalized.filter((outline) => outline.type === 'slide').length;
-  for (let index = normalized.length - 2; index > 0 && slideCount < minimumSlides; index--) {
-    if (normalized[index].type !== 'interactive') continue;
-    normalized[index] = convertOutlineToSlide(normalized[index]);
-    slideCount++;
   }
 
   return normalized;
