@@ -43,24 +43,20 @@ and ground at least 35% of scenes in valid labels from the evidence above.
 
 ## Distribution Target
 
-- **Prefer interactive scenes** (simulation / diagram / code / game / visualization3d)
-  for hands-on learning. Use slides only for the opening context, key
-  source-grounded explanations, and the final synthesis or transfer.
-- Include **at least one quiz** for active recall and application.
-- Do not force a slide-heavy ratio; choose each scene's type from its teaching
-  goal rather than a fixed distribution quota.
+- **70% interactive scenes** (simulation / diagram / code / game / visualization3d) for hands-on learning.
+- **30% slide scenes** for the opening context, key source-grounded explanations, and the final synthesis or transfer.
+- Include **at least one quiz** for active recall and application; it may replace one interactive scene when it fits the learning arc.
 
 ## Widget Type Constraints
 
 | Widget Type | Constraint |
 |------------|-----------|
-| simulation | Use for variable-driven systems the learner can manipulate |
-| game | Use when the learning goal benefits from gameplay |
-| diagram | Use for processes, systems, hierarchies, and concept maps |
+| simulation | **Minimum 2 scenes** |
+| game | **Minimum 1 scene** |
+| diagram | **Maximum 1 scene** |
 
-Only use a widget when it genuinely serves the teaching goal; never invent one
-to fill a quota. Keep source evidence visible in every scene: for a slide,
-carry it in key points and narration; for an interactive scene, keep it in the
+Keep source evidence visible in every scene: for a slide, carry `[S#]`/`[V#]`
+labels in key points and narration; for an interactive scene, keep them in the
 scene description and teacher guidance instead of dropping the widget.
 
 ## Quality Gate
