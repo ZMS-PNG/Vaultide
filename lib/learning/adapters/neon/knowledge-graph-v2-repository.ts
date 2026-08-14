@@ -600,6 +600,9 @@ export class NeonKnowledgeGraphV2Repository implements KnowledgeGraphV2Repositor
         ],
       )) as ProjectionRow[];
       if (!rows[0]) throw new Error('knowledge_graph_projection_not_saved');
+      // Keep only the latest projection for this synthesis; superseded
+      // snapshots are pruned to prevent unbounded knowledge-graph growth.
+      await this.pruneSupersededProjections(input.ownerId, input.synthesisId, input.id);
       return projection(rows[0]);
     } catch (error) {
       await getLearningSql().query(
@@ -617,6 +620,22 @@ export class NeonKnowledgeGraphV2Repository implements KnowledgeGraphV2Repositor
       );
       throw error;
     }
+  }
+
+  async pruneSupersededProjections(
+    ownerId: string,
+    synthesisId: string,
+    currentProjectionId: string,
+  ): Promise<number> {
+    const rows = (await getLearningSql().query(
+      `
+        DELETE FROM knowledge_graph_projections
+        WHERE owner_id = $1 AND synthesis_id = $2 AND id <> $3
+        RETURNING id
+      `,
+      [ownerId, synthesisId, currentProjectionId],
+    )) as Array<{ id: string }>;
+    return rows.length;
   }
 
   async saveFeedback(
