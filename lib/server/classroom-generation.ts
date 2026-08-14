@@ -385,7 +385,13 @@ export async function generateClassroom(
     researchContext,
     webSearchEnabled: input.enableWebSearch === true,
   });
-  if (qualityEnabled && !sourceReadiness.passed) {
+  // Only a completely empty source is blocked. Thin but non-empty material
+  // proceeds so a course can still be generated (matching OpenMAIC behavior).
+  if (
+    qualityEnabled &&
+    !sourceReadiness.passed &&
+    Number(sourceReadiness.metrics.totalChars ?? 0) === 0
+  ) {
     throw new Error(
       `Source material did not meet the classroom quality contract: ${describeQualityIssues(sourceReadiness)}`,
     );

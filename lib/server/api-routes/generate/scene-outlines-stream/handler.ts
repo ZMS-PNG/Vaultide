@@ -529,7 +529,10 @@ export async function POST(req: NextRequest) {
         detail,
       );
     }
-    if (qualityGateEnabled && !sourceReadiness.passed) {
+    // Thin but non-empty source material is allowed to proceed (matching
+    // OpenMAIC's generate-anyway behavior). Only a completely empty source
+    // is blocked here; the downstream evidence gates now degrade gracefully.
+    if (qualityGateEnabled && !sourceReadiness.passed && suppliedSourceChars === 0) {
       const detail = describeQualityIssues(sourceReadiness);
       await releasePlanningLease('SOURCE_QUALITY_GATE_FAILED', detail);
       return apiError(
@@ -540,7 +543,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const contentEngineV3Active = isContentEngineV3Enabled() && Boolean(requirements.learningContract);
+    const contentEngineV3Active =
+      isContentEngineV3Enabled() && Boolean(requirements.learningContract);
     let v3FallbackPlan: V3PlanRunResult | undefined;
     if (contentEngineV3Active) {
       try {
@@ -940,7 +944,9 @@ Return a completely revised outline. Do not merely rename the previous scenes.`
                     lastError = error instanceof Error ? error.message : String(error);
                     lastFailureReason = 'quality';
                     parsedOutlines = [];
-                    log.warn(`Semantic V3 outline declined; withholding deterministic template: ${lastError}`);
+                    log.warn(
+                      `Semantic V3 outline declined; withholding deterministic template: ${lastError}`,
+                    );
                     break;
                   }
                 }
@@ -1096,7 +1102,9 @@ Return a completely revised outline. Do not merely rename the previous scenes.`
             // learner asked for. Do not silently publish it when the semantic
             // arc could not be parsed or released; retain the frozen plan only
             // as a durable audit reference and return a precise retry state.
-            lastError = lastError ?? 'The semantic learning arc could not be validated against the frozen source set.';
+            lastError =
+              lastError ??
+              'The semantic learning arc could not be validated against the frozen source set.';
             log.warn(
               `Semantic V3 outline unavailable; withholding deterministic template: ${lastError}`,
             );
