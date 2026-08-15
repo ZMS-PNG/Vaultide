@@ -70,7 +70,6 @@ Never return a bare array. Never omit `languageDirective` or `courseTitle`. All 
   "title": "Scene Title",
   "description": "Teaching purpose description",
   "keyPoints": ["Point 1", "Point 2", "Point 3"],
-  "evidenceAnchor": "A 10-32 word verbatim source passage this scene teaches",
   "order": 1
 }
 ```
@@ -80,7 +79,7 @@ Never return a bare array. Never omit `languageDirective` or `courseTitle`. All 
 - **quiz scenes must include quizConfig**:
    ```json
    "quizConfig": {
-     "questionCount": 3,
+     "questionCount": 2,
      "difficulty": "easy" | "medium" | "hard",
      "questionTypes": ["single", "multiple"]
    }
@@ -91,12 +90,9 @@ Never return a bare array. Never omit `languageDirective` or `courseTitle`. All 
 - **Interactive scenes**: If a concept benefits from hands-on simulation/visualization, use `"type": "interactive"` with `widgetType` and `widgetOutline` fields. Limit to 1-2 per course.
    - Select widgetType based on concept: simulation (physics/chem), diagram (processes), code (programming), game (practice), visualization3d (3D models)
    - Provide appropriate widgetOutline for the widget type
-- **Scene count**: Always create 9-12 distinct scenes for a standard course.
-- **Learning arc**: Include context/prerequisites, mechanism/architecture, evidence and a worked example, application or retrieval, limitations/failure modes, and synthesis/transfer.
-- **Quiz placement**: Include at least one source-grounded quiz with 3 or more questions spanning recall, application, and transfer.
-- **Specificity**: Every description must name the mechanism, evidence/example, and learner action. Every scene must have 3-5 concrete, non-overlapping key points.
+- **Scene count**: Based on inferred duration, typically 1-2 scenes per minute
+- **Quiz placement**: Recommend inserting a quiz every 3-5 slides for assessment
 - **Language**: Infer from the user's requirement text and context, then output all content in the inferred language
-- **If labeled source evidence is provided**, reference specific findings in scene descriptions and keyPoints. Preserve the exact citation labels (for example `[S1]` or `[V1]`) beside the claims they support; never invent a label. For **every scene**, set `evidenceAnchor` to a compact 10-32 word verbatim passage from the supplied source that specifically supports that scene. Keep `evidenceAnchor` in the source language even when teaching in another language; it is used for audit only. Never use a heading, table of contents, URL, navigation text, or your own proposal as this anchor. At least 80% of scenes and at least 75% of factual description/key-point claims must carry a valid supplied label. If only 1-2 labels exist, use all of them; otherwise use at least 60% of the frozen label set.
-- **Final scene**: require the learner to synthesize the course and transfer it to a new project, decision, or problem. Name a concrete learner artifact (for example a decision record, architecture explanation, checklist, or worked solution) and an observable completion test. Preserve at least one valid supplied source label in this transfer task when labeled evidence exists.
+- **If web search results are provided**, reference specific findings and sources in scene descriptions and keyPoints. The search results provide up-to-date information — incorporate it to make the course content current and accurate.
 
 **Final reminder**: your entire response must be a JSON **object** with exactly three top-level keys — `languageDirective` (string), `courseTitle` (string, ≤30 chars, in the teaching language), and `outlines` (array). Do not return a bare array. Do not wrap in prose or code fences.

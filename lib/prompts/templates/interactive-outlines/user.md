@@ -33,40 +33,22 @@ Infer the course language directive by applying the decision rules from the syst
 
 {{researchContext}}
 
-When web search evidence is present, preserve exact citation labels such as `[S1]`
-beside the scene descriptions or key points they support. Never invent a label,
-and ground at least 35% of scenes in valid labels from the evidence above.
-
 {{teacherContext}}
 
 ---
 
 ## Distribution Target
 
-- **70% interactive scenes** (simulation / diagram / code / game / visualization3d) for hands-on learning.
-- **30% slide scenes** for the opening context, key source-grounded explanations, and the final synthesis or transfer.
-- Include **at least one quiz** for active recall and application; it may replace one interactive scene when it fits the learning arc.
+- **70% interactive scenes** (widgets: simulation, diagram, code, game)
+- **30% slide scenes** (introductions, summaries, transitions)
 
-## Widget Type Constraints
+## Widget Type Constraints (MANDATORY)
 
 | Widget Type | Constraint |
 |------------|-----------|
 | simulation | **Minimum 2 scenes** |
 | game | **Minimum 1 scene** |
 | diagram | **Maximum 1 scene** |
-
-Keep source evidence visible in every scene: for a slide, carry `[S#]`/`[V#]`
-labels in key points and narration; for an interactive scene, keep them in the
-scene description and teacher guidance instead of dropping the widget.
-
-## Quality Gate
-
-- Produce 9-12 scenes unless the user explicitly asks for a shorter course.
-- Every scene must advance a distinct learning objective; no decorative filler.
-- For source-based learning, tie claims and examples to the supplied material.
-- Include prerequisites, core architecture or mechanism, a worked example,
-  active recall or application, limitations or failure modes, and a final synthesis.
-- If the sources are thin, state uncertainty instead of inventing details.
 
 ## CRITICAL: Required Fields for Interactive Scenes
 

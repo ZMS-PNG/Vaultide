@@ -69,16 +69,5 @@ Generate a FUN, INTERACTIVE HTML game with these MANDATORY features:
 8. localStorage for progress/high scores
 9. Pause functionality
 
-### Teaching Contract (MANDATORY)
-1. Show at least 240 learner-visible characters explaining the mechanism,
-   objective, controls, supplied key points, failure conditions, and completion criteria
-2. Maintain a persistent `role="status"` feedback region. Every meaningful
-   action must explain the state change, score/progress consequence, and what
-   the learner should infer
-3. Include a working `重置并重放 / Reset and replay` control that resets score,
-   level, timer, objects, random seed/state, selection, progress, and feedback
-4. End with a learner-visible transfer challenge that changes one constraint
-   and asks the learner to justify a new strategy
-
 ### Output
 Return ONLY the HTML document. Make the game FUN enough that students want to play again!

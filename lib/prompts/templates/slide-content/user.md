@@ -16,15 +16,6 @@
 {{/if}}
 - **Canvas Size**: {{canvas_width}} × {{canvas_height}} px
 
-## Teaching Substance Contract
-
-- The visible slide must explicitly cover the planned key points; do not replace them with generic slogans.
-- Use five visible teaching zones: title; named mechanism/causality; source-grounded example/evidence; learner decision/check; takeaway/boundary.
-- Include a concrete mechanism or relationship, one source-grounded example/evidence item, one explicit learner comparison/decision/verification, and a takeaway, limitation, or decision rule.
-- Use at least 8 purposeful visual elements and 5 visible text groups. At least 4 text groups must contain 24+ plain-text characters.
-- Across all visible text groups, provide 260–420 plain-text characters and enough semantic detail to explain the page without narration. Keep individual bullets concise and distribute the explanation across a readable 2×2, flow, or comparison layout.
-- Preserve source labels such as [S1] or [V1] when a factual claim depends on that evidence.
-
 ## Output Requirements
 
 Based on the scene information above, generate a complete Canvas/PPT component for one page.

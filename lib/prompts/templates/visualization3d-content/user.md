@@ -76,15 +76,4 @@ Embed a complete widget configuration in the HTML:
 3. Control panel at bottom for thumb access
 4. Readable text sizes
 
-### Teaching Contract
-1. Include at least 240 learner-visible characters explaining the mechanism,
-   controls, supplied key points, one failure condition, and completion criteria
-2. Maintain a persistent `role="status"` panel. Every meaningful camera,
-   object, slider, preset, play/pause, or selection action must explain the
-   resulting state and what the learner should notice
-3. Provide a working `重置并重放 / Reset and replay` control that restores the
-   camera, object transforms, animation state, parameters, selection, and feedback
-4. Ask the learner to compare two states, explain the causal difference, and
-   transfer the mechanism to one changed constraint
-
 Return ONLY the HTML document.

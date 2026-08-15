@@ -56,18 +56,9 @@ Generate a complete, interactive HTML simulation with these MANDATORY features:
 2. Presets apply and reset simulation
 3. Keyboard shortcuts (Space = toggle, R = reset)
 4. Touch gestures for mobile
-5. A persistent learner-visible `role="status"` region; every meaningful action
-   explains the input, resulting state, output change, and what to observe
 
 ### Visual Polish
 1. Show current simulation state (running/paused/ended)
 2. Animate transitions
 3. Clear feedback when simulation ends
 4. High contrast colors for visibility
-
-### Teaching Contract
-1. Include at least 240 learner-visible characters covering mechanism,
-   instructions, key points, one failure condition, and completion criteria
-2. Ask the learner to compare at least two states and explain the causal change
-3. Provide a working `重置并重放 / Reset and replay` path that restores every
-   variable, preset, timer, trace, selection, feedback message, and animation state

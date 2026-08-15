@@ -26,27 +26,6 @@ Generate a self-contained HTML diagram with connected nodes.
 6. **No jitter**: Avoid hover transform conflicts on click
 7. **All nodes connected**: No orphan nodes
 
-## Learning Experience Contract
-
-This is a teaching experience, not a decorative graph. The returned document MUST:
-
-1. Show at least 240 characters of learner-visible instructional text across:
-   - a concise mechanism explanation,
-   - instructions for what the learner should do,
-   - a completion criterion describing what the learner should be able to verify.
-2. Provide at least two meaningful learner controls.
-3. Maintain a visible state/feedback region with `role="status"` and
-   `aria-live="polite"`. Every meaningful control MUST update this region with
-   the action taken, the resulting path/state, and what the learner should notice.
-4. Provide a working `重置并重放 / Reset and replay` control that restores the
-   initial node, edge, reveal-step, selection, and feedback state without leaving
-   stale highlights behind.
-5. Keep explanation, controls, current state, and reset available inside the
-   generated HTML. Do not rely on an external teacher narration to make the
-   interaction understandable.
-6. Teach every supplied key point through labels, explanation, or feedback.
-   A learner must be able to explain the data path after using the diagram.
-
 ## Edge Connection Code
 
 ```javascript
