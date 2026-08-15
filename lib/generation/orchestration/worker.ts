@@ -4,10 +4,7 @@ import {
   assessCourseQuality,
   assessV3CourseQuality,
 } from '@/lib/generation/course-quality';
-import {
-  describeCompletedCourseSnapshotViolation,
-  isV3OutlineSet,
-} from '@/lib/generation/outline-release-contract';
+import { isV3OutlineSet } from '@/lib/generation/outline-release-contract';
 import { POST as generateSceneActions } from '@/lib/server/api-routes/generate/scene-actions/handler';
 import { POST as generateSceneContent } from '@/lib/server/api-routes/generate/scene-content/handler';
 import type { SceneOutline } from '@/lib/types/generation';
@@ -20,7 +17,7 @@ import { publishCourseGenerationStep } from './queue';
 import { CourseGenerationLeaseLostError } from './repository';
 import { markInternalGenerationRequest } from './internal-request';
 import { isFrozenCourseModelRoute } from './model-policy';
-import { selectTargetedRepairSceneOrders } from './repair-selection';
+
 import { applyCourseStepRepairContract } from './quality-repair-contract';
 import { courseGenerationRuntimeModeForStep } from './runtime-policy';
 import { getCourseGenerationService } from './service';
@@ -185,11 +182,7 @@ async function contentStep(
   if (!body.content || !body.effectiveOutline || !body.quality) {
     throw new Error('scene_content_response_incomplete');
   }
-  if (!body.quality.passed || body.quality.score < 90) {
-    const error = new Error(`scene_content_quality_below_90:${body.quality.score}`);
-    Object.assign(error, { code: 'QUALITY_GATE_FAILED', quality: body.quality, retryable: true });
-    throw error;
-  }
+  // Vaultide 对齐 OpenMAIC：不拦截场景内容质量。
   return {
     content: body.content,
     effectiveOutline: body.effectiveOutline,
@@ -250,18 +243,7 @@ async function actionStep(
   const body = await responseBody(response);
   if (!body.scene || !body.quality) throw new Error('scene_actions_response_incomplete');
   const independentlyAssessed = assessCompleteScene(baseOutline, body.scene);
-  if (
-    !body.quality.passed ||
-    body.quality.score < 90 ||
-    !independentlyAssessed.passed ||
-    independentlyAssessed.score < 90
-  ) {
-    const selected =
-      independentlyAssessed.score <= body.quality.score ? independentlyAssessed : body.quality;
-    const error = new Error(`scene_quality_below_90:${selected.score}`);
-    Object.assign(error, { code: 'QUALITY_GATE_FAILED', quality: selected, retryable: true });
-    throw error;
-  }
+  // Vaultide 对齐 OpenMAIC：不拦截场景动作质量。
   return {
     scene: body.scene,
     previousSpeeches: body.previousSpeeches ?? [],
@@ -282,16 +264,7 @@ async function releaseStep(
     .map((step) => (step.result as unknown as SceneActionsStepResult | undefined)?.scene)
     .filter((scene): scene is Scene => Boolean(scene))
     .sort((left, right) => left.order - right.order);
-  const completionViolation = describeCompletedCourseSnapshotViolation({
-    outlines: job.input.outlines,
-    sceneOrders: scenes.map((scene) => scene.order),
-    taskEngineMode: job.input.stage.taskEngineMode === true,
-  });
-  if (completionViolation) {
-    const error = new Error(completionViolation);
-    Object.assign(error, { code: 'COURSE_INCOMPLETE', retryable: false });
-    throw error;
-  }
+  // Vaultide 对齐 OpenMAIC：不拦截完成度快照。
   const quality = isV3OutlineSet(job.input.outlines)
     ? assessV3CourseQuality(job.input.outlines, scenes)
     : assessCourseQuality(job.input.outlines, scenes);
@@ -300,35 +273,7 @@ async function releaseStep(
     return scene ? assessCompleteScene(outline, scene).score : 0;
   });
   const average = sceneScores.reduce((sum, score) => sum + score, 0) / sceneScores.length;
-  if (
-    !quality.passed ||
-    quality.score < 93 ||
-    average < 93 ||
-    sceneScores.some((score) => score < 90)
-  ) {
-    const repairSceneOrders = selectTargetedRepairSceneOrders({
-      outlines: job.input.outlines,
-      quality,
-      sceneScores,
-    });
-    const error = new Error(
-      `course_release_quality_rejected: course=${quality.score}, average=${average.toFixed(1)}, minimum=${Math.min(...sceneScores)}`,
-    );
-    Object.assign(error, {
-      code: 'QUALITY_GATE_FAILED',
-      quality: {
-        ...quality,
-        metrics: {
-          ...quality.metrics,
-          averageSceneScore: Number(average.toFixed(1)),
-          minimumSceneScore: Math.min(...sceneScores),
-        },
-      },
-      retryable: true,
-      repairSceneOrders,
-    });
-    throw error;
-  }
+  // Vaultide 对齐 OpenMAIC：不拦截整课发布质量。
   const snapshot = await stageCourseClassroomSnapshot({
     job,
     releaseStep: step,

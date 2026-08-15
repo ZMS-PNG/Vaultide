@@ -5,17 +5,11 @@ import {
   type LearningSourceReference,
 } from '@/lib/learning/domain/learning-context-pack';
 import { NeonKnowledgeSnapshotRepository } from '@/lib/learning/adapters/neon/knowledge-snapshot-repository';
-import { assessOutlineQuality, assessV3OutlineQuality } from '@/lib/generation/course-quality';
-import {
-  describeOutlineReleaseViolation,
-  describeV3OutlineReleaseViolation,
-  isV3OutlineSet,
-} from '@/lib/generation/outline-release-contract';
+import { isV3OutlineSet } from '@/lib/generation/outline-release-contract';
 import { NeonCourseGenerationRepository } from './repository';
 import { courseQueueConfigured, publishCourseGenerationStep } from './queue';
 import { freezeCourseGenerationPolicy } from './model-policy';
 import { convergeCourseInputOutlines } from './input-outline-convergence';
-import { OUTLINE_QUALITY_RELEASE_FLOOR } from '@/lib/generation/outline-quality-repair';
 import { createLogger } from '@/lib/logger';
 import { getCoursePlanningService } from '@/lib/generation/planning/service';
 import type {
@@ -65,15 +59,7 @@ function validateInput(input: CourseGenerationJobInput): void {
   if (!input.stage?.id || input.stage.id.length > 128) throw new Error('invalid_classroom_id');
   if (!input.requirements?.requirement?.trim()) throw new Error('learning_goal_required');
   if (!input.sourceContext?.trim()) throw new Error('learning_context_source_required');
-  const v3 = isV3OutlineSet(input.outlines);
-  const releaseViolation = v3
-    ? describeV3OutlineReleaseViolation(input.outlines)
-    : describeOutlineReleaseViolation(input.outlines, input.stage.taskEngineMode === true);
-  if (releaseViolation) throw new Error(`outline_release_rejected: ${releaseViolation}`);
-  const outlineQuality = v3 ? assessV3OutlineQuality(input.outlines) : assessOutlineQuality(input.outlines);
-  if (!outlineQuality.passed || outlineQuality.score < OUTLINE_QUALITY_RELEASE_FLOOR) {
-    throw new Error(`outline_quality_rejected: ${outlineQuality.issues[0]?.message ?? 'unknown'}`);
-  }
+  // Vaultide 对齐官方 OpenMAIC：生成阶段不再被大纲发布门和质量门拦截。
   const serializedBytes = Buffer.byteLength(JSON.stringify(input), 'utf8');
   if (serializedBytes > 12 * 1024 * 1024) throw new Error('course_generation_input_too_large');
 }
