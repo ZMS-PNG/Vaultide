@@ -64,11 +64,11 @@ type QualityDimensions = NonNullable<CourseQualityAssessment['dimensions']>;
  * schema behavior. Production never accepts an opt-out.
  */
 export function shouldEnforceCourseQuality(
-  explicit?: unknown,
-  environment = process.env.NODE_ENV,
+  _explicit?: unknown,
+  _environment = process.env.NODE_ENV,
 ): boolean {
-  if (environment !== 'test') return true;
-  return explicit === true;
+  // Vaultide 对齐官方 OpenMAIC：生成阶段不再强制质量门。
+  return false;
 }
 
 const FOUNDATION_PATTERN =

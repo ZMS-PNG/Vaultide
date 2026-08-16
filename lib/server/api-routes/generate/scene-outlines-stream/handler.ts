@@ -916,25 +916,12 @@ Return a completely revised outline. Do not merely rename the previous scenes.`
                       courseTitle,
                       languageDirective,
                     });
-                    const semanticAssessment = combineQualityAssessments(
-                      assessOutlineQuality(semanticPlan.outlines),
-                      assessOutlineEvidenceIntegrity(outlineEvidenceContext, semanticPlan.outlines),
-                    );
-                    if (
-                      !semanticAssessment.passed ||
-                      semanticAssessment.score < OUTLINE_QUALITY_RELEASE_FLOOR
-                    ) {
-                      throw new Error(
-                        `semantic_outline_quality_rejected:${describeQualityIssues(semanticAssessment, 8)}`,
-                      );
-                    }
+                    // Vaultide 对齐 OpenMAIC：语义 V3 大纲不再被质量门拒绝。
                     parsedOutlines = semanticPlan.outlines;
                     languageDirective = semanticPlan.languageDirective;
                     courseTitle = semanticPlan.courseTitle;
                     planningMode = 'semantic-v3';
-                    log.info(
-                      `Semantic V3 outline accepted (score=${semanticAssessment.score}, scenes=${parsedOutlines.length}).`,
-                    );
+                    log.info(`Semantic V3 outline accepted (scenes=${parsedOutlines.length}).`);
                     break;
                   } catch (error) {
                     // One high-quality semantic attempt is the time budget. A
