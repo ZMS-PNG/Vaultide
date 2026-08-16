@@ -354,11 +354,7 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
           content,
         );
         if (!evidenceBefore.passed) {
-          content = convergeGeneratedSceneEvidence(
-            effectiveOutline,
-            content,
-            languageDirective,
-          );
+          content = convergeGeneratedSceneEvidence(effectiveOutline, content, languageDirective);
           const evidenceAfter = assessSceneEvidenceIntegrity(
             sourceContext,
             effectiveOutline,
@@ -371,7 +367,7 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
             );
           }
         }
-    const finalOrder = Math.max(...normalizedAllOutlines.map((candidate) => candidate.order));
+        const finalOrder = Math.max(...normalizedAllOutlines.map((candidate) => candidate.order));
         if (effectiveOutline.order === finalOrder) {
           content = convergeFinalSceneTransferDelivery(
             effectiveOutline,
@@ -381,14 +377,14 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
         }
       }
       if (!content) continue;
-      if (!qualityGateEnabled) break;
       const assessment = combineQualityAssessments(
         assessGeneratedSceneContent(effectiveOutline, content),
         assessSceneEvidenceIntegrity(sourceContext, effectiveOutline, content),
         assessFinalSceneArtifactContract(effectiveOutline, content),
       );
       contentQuality = assessment;
-      if (assessment.passed) break;
+      // Vaultide 对齐 OpenMAIC：始终产出质量评估供回写，但不再用其拦截生成。
+      if (!qualityGateEnabled || assessment.passed) break;
       log.warn(
         `Content quality gate rejected "${effectiveOutline.title}" (attempt ${attempt}/${MAX_QUALITY_ATTEMPTS}, score=${assessment.score}): ${describeQualityIssues(assessment)}`,
       );

@@ -279,10 +279,10 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
       }
       scene = buildCompleteScene(outline, content, actions, stageId);
       if (!scene) continue;
-      if (!qualityGateEnabled) break;
       const assessment = assessCompleteScene(outline, scene);
       sceneQuality = assessment;
-      if (assessment.passed) break;
+      // Vaultide 对齐 OpenMAIC：始终产出质量评估供回写，但不再用其拦截生成。
+      if (!qualityGateEnabled || assessment.passed) break;
       log.warn(
         `Scene quality gate rejected "${outline.title}" (attempt ${attempt}/${MAX_QUALITY_ATTEMPTS}, score=${assessment.score}): ${describeQualityIssues(assessment)}`,
       );
