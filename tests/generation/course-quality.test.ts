@@ -309,9 +309,12 @@ describe('course quality contract', () => {
     expect(result.issues.map((entry) => entry.code)).not.toContain('source_citation_set_too_small');
   });
 
-  it('allows tiny unrelated test fixtures but never disables the production gate', () => {
+  it('keeps the blocking course quality gate disabled during generation for OpenMAIC parity', () => {
+    // Vaultide parity decision: blocking quality gates are disabled so a
+    // course generates like official OpenMAIC. Assessment is still computed
+    // and persisted as evidence, but it no longer rejects the result.
     expect(shouldEnforceCourseQuality(undefined, 'test')).toBe(false);
-    expect(shouldEnforceCourseQuality(true, 'test')).toBe(true);
-    expect(shouldEnforceCourseQuality(false, 'production')).toBe(true);
+    expect(shouldEnforceCourseQuality(true, 'test')).toBe(false);
+    expect(shouldEnforceCourseQuality(false, 'production')).toBe(false);
   });
 });
