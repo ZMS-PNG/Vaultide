@@ -48,10 +48,7 @@ import {
 } from '@/lib/generation/orchestration/runtime-policy';
 import { createGenerationDeadline } from '@/lib/server/generation-deadline';
 import {
-  convergeFinalSceneTransferDelivery,
   convergeGeneratedSceneContent,
-  convergeGeneratedSceneEvidence,
-  convergeUnsupportedNamedEvidenceClaims,
 } from '@/lib/generation/content-quality-convergence';
 import {
   normalizeSceneOutlineContract,
@@ -124,10 +121,10 @@ export async function POST(req: NextRequest) {
     }
 
     let normalizedOutline: SceneOutline;
-    let normalizedAllOutlines: SceneOutline[];
+    let _normalizedAllOutlines: SceneOutline[];
     try {
       normalizedOutline = normalizeSceneOutlineContract(rawOutline);
-      normalizedAllOutlines = normalizeSceneOutlineListContract(allOutlines);
+      _normalizedAllOutlines = normalizeSceneOutlineListContract(allOutlines);
     } catch (error) {
       const message =
         error instanceof SceneOutlineContractError
@@ -321,58 +318,19 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
         content = null;
       }
       if (durableFirstPass && effectiveOutline.type !== 'pbl') {
-        const before = content
-          ? assessGeneratedSceneContent(effectiveOutline, content).passed
-          : false;
-        content = convergeGeneratedSceneContent(
-          effectiveOutline,
-          content as Parameters<typeof convergeGeneratedSceneContent>[1],
-          languageDirective,
-        );
-        if (!before) {
+        if (!content) {
+          // Provider failed/timed out: build a deterministic fallback so the
+          // course keeps moving without another provider call. When content is
+          // present, keep the model's raw output (OpenMAIC parity) instead of
+          // rewriting it through Vaultide-specific quality convergence.
+          content = convergeGeneratedSceneContent(
+            effectiveOutline,
+            null,
+            languageDirective,
+          );
           usedDeterministicConvergence = true;
           log.info(
-            `Deterministic content convergence completed for "${effectiveOutline.title}" (${effectiveOutline.type})`,
-          );
-        }
-        const beforeNamedEvidenceConvergence = content;
-        content = convergeUnsupportedNamedEvidenceClaims(
-          effectiveOutline,
-          content,
-          sourceContext,
-          languageDirective,
-        );
-        if (content !== beforeNamedEvidenceConvergence) {
-          usedDeterministicConvergence = true;
-          log.warn(
-            `Unsupported named evidence claim converged from the approved outline for "${effectiveOutline.title}" without a provider retry`,
-          );
-        }
-        const evidenceBefore = assessSceneEvidenceIntegrity(
-          sourceContext,
-          effectiveOutline,
-          content,
-        );
-        if (!evidenceBefore.passed) {
-          content = convergeGeneratedSceneEvidence(effectiveOutline, content, languageDirective);
-          const evidenceAfter = assessSceneEvidenceIntegrity(
-            sourceContext,
-            effectiveOutline,
-            content,
-          );
-          if (evidenceAfter.passed) {
-            usedDeterministicConvergence = true;
-            log.info(
-              `Deterministic evidence convergence completed for "${effectiveOutline.title}" (${effectiveOutline.type})`,
-            );
-          }
-        }
-        const finalOrder = Math.max(...normalizedAllOutlines.map((candidate) => candidate.order));
-        if (effectiveOutline.order === finalOrder) {
-          content = convergeFinalSceneTransferDelivery(
-            effectiveOutline,
-            content,
-            languageDirective,
+            `Deterministic content fallback built for "${effectiveOutline.title}" (${effectiveOutline.type}) after provider failure`,
           );
         }
       }
