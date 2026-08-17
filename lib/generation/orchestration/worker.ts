@@ -3,6 +3,7 @@ import {
   assessCompleteScene,
   assessCourseQuality,
   assessV3CourseQuality,
+  shouldEnforceCourseQuality,
 } from '@/lib/generation/course-quality';
 import { isV3OutlineSet } from '@/lib/generation/outline-release-contract';
 import { POST as generateSceneActions } from '@/lib/server/api-routes/generate/scene-actions/handler';
@@ -58,6 +59,10 @@ function repairedOutline(
   step: CourseGenerationStepRecord,
   languageDirective?: string,
 ): SceneOutline {
+  // OpenMAIC parity: skip the Vaultide-specific step repair contract (which
+  // injects repair text into the outline on retries) when the quality gate is
+  // disabled.
+  if (!shouldEnforceCourseQuality()) return outline;
   return applyCourseStepRepairContract(outline, step, languageDirective);
 }
 

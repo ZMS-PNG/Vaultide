@@ -29,7 +29,7 @@ import {
   DEFAULT_LANGUAGE_DIRECTIVE,
   normalizeQualityFirstOutlines,
 } from '@/lib/generation/outline-generator';
-import { parseJsonResponse } from '@/lib/generation/json-repair';
+import { parseJsonResponse } from '@openmaic/generation';
 import { normalizeOutlineEnvelope } from '@/lib/generation/outline-envelope-normalization';
 import { MAX_PDF_CONTENT_CHARS, MAX_VISION_IMAGES } from '@/lib/constants/generation';
 import { nanoid } from 'nanoid';

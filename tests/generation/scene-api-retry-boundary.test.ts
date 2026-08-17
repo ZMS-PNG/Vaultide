@@ -122,18 +122,15 @@ describe('scene API retry boundary', () => {
 
     expect(body.success).toBe(true);
     expect(mocks.callLLM.mock.calls[0][0].maxRetries).toBe(0);
-    const convergedActions = mocks.buildCompleteScene.mock.calls[0][2] as Array<{
+    // OpenMAIC parity: the model-generated actions pass through unchanged.
+    const passedActions = mocks.buildCompleteScene.mock.calls[0][2] as Array<{
       type: string;
       text?: string;
     }>;
-    expect(convergedActions.length).toBeGreaterThanOrEqual(5);
-    expect(
-      convergedActions.filter((action) => action.type === 'speech').length,
-    ).toBeGreaterThanOrEqual(3);
-    expect(new Set(convergedActions.map((action) => action.type)).size).toBeGreaterThanOrEqual(2);
+    expect(passedActions).toEqual([]);
   });
 
-  it('skips the second provider call for durable first-pass scene actions', async () => {
+  it('generates model actions for durable first-pass scene actions', async () => {
     vi.resetModules();
     mocks.generateSceneActions.mockResolvedValue([]);
     mocks.buildCompleteScene.mockImplementation((_outline, content, actions) => ({
@@ -161,9 +158,11 @@ describe('scene API retry boundary', () => {
     const body = await response.json();
 
     expect(body.success).toBe(true);
-    expect(mocks.generateSceneActions).not.toHaveBeenCalled();
+    // OpenMAIC parity: durable first-pass model-generates actions (the mocked
+    // generator returns [] without calling the LLM, and the output passes through).
+    expect(mocks.generateSceneActions).toHaveBeenCalledTimes(1);
     expect(mocks.callLLM).not.toHaveBeenCalled();
-    expect(mocks.buildCompleteScene.mock.calls[0][2].length).toBeGreaterThanOrEqual(5);
+    expect(mocks.buildCompleteScene.mock.calls[0][2]).toEqual([]);
   });
 
   it('ends a slow durable slide call at the soft budget and completes without provider retries', async () => {

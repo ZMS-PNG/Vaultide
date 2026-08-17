@@ -44,7 +44,6 @@ import {
   type CourseGenerationRuntimeMode,
 } from '@/lib/generation/orchestration/runtime-policy';
 import { createGenerationDeadline } from '@/lib/server/generation-deadline';
-import { stabilizeGeneratedSceneActions } from '@/lib/generation/action-quality-convergence';
 import {
   normalizeSceneOutlineContract,
   normalizeSceneOutlineListContract,
@@ -245,29 +244,17 @@ export async function POST(req: NextRequest) {
 QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
             }
           : outline;
-      // Durable course generation uses a deterministic teaching sequence. The
-      // outline and scene content already contain the subject-specific work;
-      // asking a second model to restate it doubled the number of provider
-      // calls and was the largest avoidable source of timeout variance.
-      const generatedActions = durableFirstPass
-        ? []
-        : await generateSceneActions(attemptOutline, content as unknown as Parameters<typeof generateSceneActions>[1], aiCall, {
-            ctx,
-            agents,
-            userProfile,
-            languageDirective,
-          });
-      actions = stabilizeGeneratedSceneActions(
-        outline,
-        content,
-        generatedActions,
+      // OpenMAIC parity: model-generate actions for every path (the official
+      // generateSceneActions supplies its own defaults when the response is
+      // empty), and keep the model output as-is instead of stabilizing it
+      // through Vaultide-specific deterministic templates.
+      const generatedActions = await generateSceneActions(attemptOutline, content as unknown as Parameters<typeof generateSceneActions>[1], aiCall, {
+        ctx,
+        agents,
+        userProfile,
         languageDirective,
-      );
-      if (durableFirstPass) {
-        log.info(
-          `Deterministic first-pass actions assembled for "${outline.title}" (${actions.length} actions; model call skipped)`,
-        );
-      }
+      });
+      actions = generatedActions;
       if (
         actions.length !== generatedActions.length ||
         new Set(actions.map((action) => action.type)).size !==
@@ -277,7 +264,12 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
           `Action quality convergence completed for "${outline.title}": ${generatedActions.length} -> ${actions.length} actions`,
         );
       }
-      scene = buildCompleteScene(outline, content, actions, stageId);
+      scene = buildCompleteScene(
+        outline,
+        content as unknown as Parameters<typeof buildCompleteScene>[1],
+        actions,
+        stageId,
+      ) as Scene | null;
       if (!scene) continue;
       const assessment = assessCompleteScene(outline, scene);
       sceneQuality = assessment;

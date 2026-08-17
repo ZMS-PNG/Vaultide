@@ -19,7 +19,14 @@ export const nextConfig: NextConfig = {
   // Use Next's global route glob so both the consolidated API function and the
   // workflow step function receive the same reviewed prompt assets.
   outputFileTracingIncludes: {
-    '/*': ['./lib/prompts/templates/**/*', './lib/prompts/snippets/**/*'],
+    '/*': [
+      './lib/prompts/templates/**/*',
+      './lib/prompts/snippets/**/*',
+      // Official @openmaic/generation templates are read via fs at runtime.
+      './packages/@openmaic/generation/templates/**/*',
+      './packages/@openmaic/generation/snippets/**/*',
+      './packages/@openmaic/generation/prompts-pbl/**/*',
+    ],
   },
   experimental: {
     proxyClientMaxBodySize: '200mb',
