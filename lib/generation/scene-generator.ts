@@ -46,10 +46,7 @@ import type {
 import { normalizeProjectRuntime } from '@/lib/pbl/v2/operations/progress';
 import { buildPrompt, PROMPT_IDS } from '@/lib/prompts';
 import { DEFAULT_LANGUAGE_DIRECTIVE } from './outline-generator';
-import {
-  ensureInteractiveLearningShell,
-  postProcessInteractiveHtml,
-} from './interactive-post-processor';
+import { postProcessInteractiveHtml } from './interactive-post-processor';
 import { parseActionsFromStructuredOutput } from './action-parser';
 import { parseJsonResponse } from './json-repair';
 import {
@@ -1630,14 +1627,9 @@ export async function generateWidgetContent(
   const widgetConfig = extractWidgetConfig(html);
 
   const processedHtml = postProcessInteractiveHtml(html);
-  const stabilizedHtml = ensureInteractiveLearningShell(processedHtml, {
-    title: outline.title,
-    description: outline.description,
-    keyPoints: outline.keyPoints,
-  });
 
   return {
-    html: stabilizedHtml,
+    html: processedHtml,
     widgetType,
     widgetConfig,
   };
