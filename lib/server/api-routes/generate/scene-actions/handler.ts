@@ -31,10 +31,6 @@ import { llmApiError } from '@/lib/server/llm-error-response';
 import { resolveGenerationModel } from '@/lib/generation/orchestration/resolve-generation-model';
 import type { FrozenCourseModelRoute } from '@/lib/generation/orchestration/model-policy';
 import {
-  assessCompleteScene,
-  describeQualityIssues,
-  shouldEnforceCourseQuality,
-  type CourseQualityAssessment,
 } from '@/lib/generation/course-quality';
 import { isInternalGenerationRequest } from '@/lib/generation/orchestration/internal-request';
 import {
@@ -73,7 +69,6 @@ export async function POST(req: NextRequest) {
       previousSpeeches: incomingPreviousSpeeches,
       userProfile,
       languageDirective,
-      enforceQualityContract,
       frozenModelPolicy,
       runtimeMode: requestedRuntimeMode,
     } = body as {
@@ -224,17 +219,15 @@ export async function POST(req: NextRequest) {
     // ── Generate actions ──
     log.info(`Generating actions: "${outline.title}" (${outline.type}) [model=${modelString}]`);
 
-    const qualityGateEnabled = shouldEnforceCourseQuality(enforceQualityContract);
     // One invocation owns exactly one model attempt. Cross-attempt repair is
     // driven by the durable generation ledger so a timeout cannot erase both
     // the attempt and its quality feedback.
     const MAX_QUALITY_ATTEMPTS = 1;
     let actions: Action[] = [];
     let scene: Scene | null = null;
-    let sceneQuality: CourseQualityAssessment | undefined;
     for (let attempt = 1; attempt <= MAX_QUALITY_ATTEMPTS; attempt++) {
       const qualityInstruction =
-        sceneQuality && !sceneQuality.passed ? describeQualityIssues(sceneQuality) : '';
+        '';
       const attemptOutline =
         qualityInstruction && attempt > 1
           ? {
@@ -271,14 +264,8 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
         stageId,
       ) as Scene | null;
       if (!scene) continue;
-      const assessment = assessCompleteScene(outline, scene);
-      sceneQuality = assessment;
-      // Vaultide 对齐 OpenMAIC：始终产出质量评估供回写，但不再用其拦截生成。
-      if (!qualityGateEnabled || assessment.passed) break;
-      log.warn(
-        `Scene quality gate rejected "${outline.title}" (attempt ${attempt}/${MAX_QUALITY_ATTEMPTS}, score=${assessment.score}): ${describeQualityIssues(assessment)}`,
-      );
-      scene = null;
+      // OpenMAIC parity: no Vaultide quality assessment.
+      break;
     }
 
     log.info(`Generated ${actions.length} actions for: "${outline.title}"`);
@@ -287,12 +274,10 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
       log.error(`Failed to build scene: "${outline.title}"`);
 
       return apiError(
-        sceneQuality ? 'QUALITY_GATE_FAILED' : 'GENERATION_FAILED',
-        sceneQuality ? 422 : 500,
-        sceneQuality
-          ? `Scene did not meet the quality contract: ${outline.title}`
-          : `Failed to build scene: ${outline.title}`,
-        sceneQuality ? describeQualityIssues(sceneQuality) : undefined,
+        'GENERATION_FAILED',
+        500,
+        `Failed to build scene: ${outline.title}`,
+        undefined,
       );
     }
 
@@ -309,7 +294,7 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
       }]`,
     );
 
-    return apiSuccess({ scene, previousSpeeches: outputPreviousSpeeches, quality: sceneQuality });
+    return apiSuccess({ scene, previousSpeeches: outputPreviousSpeeches, quality: { passed: true, score: 0, issues: [], metrics: {} } });
   } catch (error) {
     log.error(
       `Scene actions generation failed [scene="${outlineTitle ?? 'unknown'}", model=${resolvedModelString ?? 'unknown'}]:`,

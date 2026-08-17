@@ -33,16 +33,8 @@ import type { FrozenCourseModelRoute } from '@/lib/generation/orchestration/mode
 import { resolveVocationalActive } from '@/lib/config/feature-flags';
 import { sortDocumentImagesForVision } from '@/lib/document/bundle';
 import {
-  assessFinalSceneArtifactContract,
-  assessGeneratedSceneContent,
-  describeQualityIssues,
-  shouldEnforceCourseQuality,
   type CourseQualityAssessment,
 } from '@/lib/generation/course-quality';
-import {
-  assessSceneEvidenceIntegrity,
-  combineQualityAssessments,
-} from '@/lib/generation/evidence-quality';
 import { isInternalGenerationRequest } from '@/lib/generation/orchestration/internal-request';
 import {
   courseGenerationMaxOutputTokens,
@@ -83,9 +75,6 @@ export async function POST(req: NextRequest) {
       agents,
       languageDirective,
       requirements,
-      sourceContext,
-      learnerKnowledgeContext,
-      enforceQualityContract,
       frozenModelPolicy,
       runtimeMode: requestedRuntimeMode,
     } = body as {
@@ -265,7 +254,6 @@ export async function POST(req: NextRequest) {
 
     const userLocale = req.headers?.get('x-user-locale') ?? '';
 
-    const qualityGateEnabled = shouldEnforceCourseQuality(enforceQualityContract);
     // One invocation owns exactly one model attempt. Durable orchestration
     // persists rejection feedback and schedules a fresh invocation; retrying
     // twice inside one Vercel Function is what previously produced 300s/504
@@ -275,7 +263,7 @@ export async function POST(req: NextRequest) {
     let contentQuality: CourseQualityAssessment | undefined;
     for (let attempt = 1; attempt <= MAX_QUALITY_ATTEMPTS; attempt++) {
       const qualityInstruction =
-        contentQuality && !contentQuality.passed ? describeQualityIssues(contentQuality) : '';
+        '';
       const attemptOutline =
         qualityInstruction && attempt > 1
           ? {
@@ -332,24 +320,11 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
         }
       }
       if (!content) continue;
-      const assessment = combineQualityAssessments(
-        assessGeneratedSceneContent(effectiveOutline, content),
-        assessSceneEvidenceIntegrity(sourceContext, effectiveOutline, content),
-        assessFinalSceneArtifactContract(effectiveOutline, content),
-      );
-      contentQuality = assessment;
-      // Vaultide 对齐 OpenMAIC：始终产出质量评估供回写，但不再用其拦截生成。
-      if (!qualityGateEnabled || assessment.passed) break;
-      log.warn(
-        `Content quality gate rejected "${effectiveOutline.title}" (attempt ${attempt}/${MAX_QUALITY_ATTEMPTS}, score=${assessment.score}): ${describeQualityIssues(assessment)}`,
-      );
-      log.warn(
-        `[Scene Content API] Rejection metrics for "${effectiveOutline.title}": ${JSON.stringify({
-          issues: assessment.issues.map((entry) => entry.code),
-          metrics: assessment.metrics,
-        })}`,
-      );
-      content = null;
+      // OpenMAIC parity: no Vaultide quality assessment, evidence integrity,
+      // or final-artifact checks. Quality is a trivial placeholder so the
+      // durable worker response contract stays satisfied.
+      contentQuality = { passed: true, score: 0, issues: [], metrics: {} };
+      break;
     }
 
     if (!content) {
@@ -361,7 +336,7 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
         contentQuality
           ? `Scene did not meet the quality contract: ${effectiveOutline.title}`
           : `Failed to generate content: ${effectiveOutline.title}`,
-        contentQuality ? describeQualityIssues(contentQuality) : undefined,
+        undefined,
       );
     }
 

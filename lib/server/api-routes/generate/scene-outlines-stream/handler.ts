@@ -27,7 +27,6 @@ import {
 import type { AgentInfo } from '@/lib/generation/generation-pipeline';
 import {
   DEFAULT_LANGUAGE_DIRECTIVE,
-  normalizeQualityFirstOutlines,
 } from '@/lib/generation/outline-generator';
 import { parseJsonResponse } from '@openmaic/generation';
 import { normalizeOutlineEnvelope } from '@/lib/generation/outline-envelope-normalization';
@@ -47,21 +46,11 @@ import { sortDocumentImagesForVision } from '@/lib/document/bundle';
 import { resolveVocationalActive } from '@/lib/config/feature-flags';
 import { isContentEngineV3Enabled } from '@/lib/config/feature-flags';
 import {
-  assessOutlineQuality,
-  assessSourceReadiness,
-  describeQualityIssues,
-  shouldEnforceCourseQuality,
 } from '@/lib/generation/course-quality';
 import {
-  fortifyOutlinesForRelease,
-  OUTLINE_QUALITY_RELEASE_FLOOR,
-  repairSafeOutlineQualityIssues,
 } from '@/lib/generation/outline-quality-repair';
 import {
-  assessOutlineEvidenceIntegrity,
-  combineQualityAssessments,
 } from '@/lib/generation/evidence-quality';
-import { convergeOutlineEvidence } from '@/lib/generation/outline-evidence-convergence';
 import { getCoursePlanningService } from '@/lib/generation/planning/service';
 import {
   buildSemanticV3PlanRun,
@@ -447,12 +436,11 @@ export async function POST(req: NextRequest) {
       outlineRepairFeedback?: string;
       sourceContextExpectedChars?: number;
     };
-    let { requirements, pdfText, researchContext, sourceContextExpectedChars } = parsedBody;
+    let { requirements, pdfText, researchContext } = parsedBody;
     const {
       pdfImages,
       imageMapping,
       agents,
-      enforceQualityContract,
       outlineAttemptMode,
       outlineRepairFeedback,
     } = parsedBody;
@@ -473,7 +461,6 @@ export async function POST(req: NextRequest) {
       requirements = persisted.input.requirements;
       pdfText = persisted.input.documentText;
       researchContext = persisted.input.researchText;
-      sourceContextExpectedChars = persisted.input.sourceContextExpectedChars;
       planningLeaseToken = planningLease.leaseToken;
       const compiledContext = await getCoursePlanningService().compileContext(persisted);
       learnerKnowledgeContext = compiledContext.learnerKnowledgeText;
@@ -508,40 +495,6 @@ export async function POST(req: NextRequest) {
 
     requirementSnippet = requirements?.requirement?.substring(0, 60);
 
-    const sourceReadiness = assessSourceReadiness({
-      pdfText,
-      researchContext,
-      webSearchEnabled: requirements.webSearch === true,
-    });
-    const qualityGateEnabled = shouldEnforceCourseQuality(enforceQualityContract);
-    const expectedSourceChars =
-      typeof sourceContextExpectedChars === 'number' && Number.isFinite(sourceContextExpectedChars)
-        ? Math.max(0, Math.floor(sourceContextExpectedChars))
-        : 0;
-    const suppliedSourceChars = Number(sourceReadiness.metrics.totalChars ?? 0);
-    if (qualityGateEnabled && expectedSourceChars >= 1_200 && suppliedSourceChars < 1_200) {
-      const detail = `Expected a reviewed project context of about ${expectedSourceChars.toLocaleString()} characters, but only ${suppliedSourceChars.toLocaleString()} substantive characters reached outline generation. Return to source review and relaunch the same retrieval set.`;
-      await releasePlanningLease('SOURCE_CONTEXT_LOST', detail);
-      return apiError(
-        'SOURCE_CONTEXT_LOST',
-        409,
-        'The reviewed source set was not transferred completely.',
-        detail,
-      );
-    }
-    // Thin but non-empty source material is allowed to proceed (matching
-    // OpenMAIC's generate-anyway behavior). Only a completely empty source
-    // is blocked here; the downstream evidence gates now degrade gracefully.
-    if (qualityGateEnabled && !sourceReadiness.passed && suppliedSourceChars === 0) {
-      const detail = describeQualityIssues(sourceReadiness);
-      await releasePlanningLease('SOURCE_QUALITY_GATE_FAILED', detail);
-      return apiError(
-        'QUALITY_GATE_FAILED',
-        422,
-        'Source material is not deep enough for a high-quality course.',
-        detail,
-      );
-    }
 
     const contentEngineV3Active =
       isContentEngineV3Enabled() && Boolean(requirements.learningContract);
@@ -570,7 +523,6 @@ export async function POST(req: NextRequest) {
         );
       }
     }
-    const outlineEvidenceContext = contentEngineV3Active ? pdfText : researchContext;
 
     // The single semantic pass comes only after the source set and its durable
     // fallback are frozen. This prevents model instability from becoming a
@@ -763,7 +715,7 @@ export async function POST(req: NextRequest) {
           let courseTitle: string | null = null;
           let lastError: string | undefined;
           let planningMode: 'semantic-v3' | 'deterministic-v3-fallback' | undefined;
-          let qualityFeedback =
+          const qualityFeedback =
             typeof outlineRepairFeedback === 'string'
               ? outlineRepairFeedback.trim().slice(0, 4_000)
               : '';
@@ -937,97 +889,9 @@ Return a completely revised outline. Do not merely rename the previous scenes.`
                     break;
                   }
                 }
-                if (!qualityGateEnabled) break;
-
-                let qualityCandidate = fortifyOutlinesForRelease(
-                  normalizeQualityFirstOutlines(parsedOutlines),
-                ).outlines;
-                let qualityAssessment = combineQualityAssessments(
-                  assessOutlineQuality(qualityCandidate),
-                  assessOutlineEvidenceIntegrity(outlineEvidenceContext, qualityCandidate),
-                );
-                if (
-                  qualityAssessment.passed &&
-                  qualityAssessment.score >= OUTLINE_QUALITY_RELEASE_FLOOR
-                ) {
-                  parsedOutlines = qualityCandidate;
-                  log.info(
-                    `Outline quality gate passed (score=${qualityAssessment.score}, scenes=${qualityCandidate.length})`,
-                  );
-                  break;
-                }
-
-                const safeRepair = repairSafeOutlineQualityIssues(
-                  qualityCandidate,
-                  qualityAssessment,
-                );
-                if (safeRepair.changed) {
-                  qualityCandidate = fortifyOutlinesForRelease(safeRepair.outlines).outlines;
-                  qualityAssessment = combineQualityAssessments(
-                    assessOutlineQuality(qualityCandidate),
-                    assessOutlineEvidenceIntegrity(outlineEvidenceContext, qualityCandidate),
-                  );
-                  log.info(
-                    `Applied safe outline repair (${safeRepair.repairedIssueCodes.join(', ')}); revalidated score=${qualityAssessment.score}`,
-                  );
-                  if (
-                    qualityAssessment.passed &&
-                    qualityAssessment.score >= OUTLINE_QUALITY_RELEASE_FLOOR
-                  ) {
-                    parsedOutlines = qualityCandidate;
-                    log.info(
-                      `Outline quality gate passed after safe repair (score=${qualityAssessment.score}, scenes=${qualityCandidate.length})`,
-                    );
-                    break;
-                  }
-                }
-
-                const evidenceConvergence = convergeOutlineEvidence(
-                  researchContext,
-                  qualityCandidate,
-                );
-                if (evidenceConvergence.changed) {
-                  qualityCandidate = fortifyOutlinesForRelease(
-                    evidenceConvergence.outlines,
-                  ).outlines;
-                  qualityAssessment = combineQualityAssessments(
-                    assessOutlineQuality(qualityCandidate),
-                    assessOutlineEvidenceIntegrity(outlineEvidenceContext, qualityCandidate),
-                  );
-                  log.info(
-                    `Applied deterministic outline evidence convergence (${evidenceConvergence.usedLabels.length}/${evidenceConvergence.availableLabels.length} frozen labels); revalidated score=${qualityAssessment.score}`,
-                  );
-                  if (
-                    qualityAssessment.passed &&
-                    qualityAssessment.score >= OUTLINE_QUALITY_RELEASE_FLOOR
-                  ) {
-                    parsedOutlines = qualityCandidate;
-                    log.info(
-                      `Outline quality gate passed after evidence convergence (score=${qualityAssessment.score}, scenes=${qualityCandidate.length})`,
-                    );
-                    break;
-                  }
-                }
-
-                qualityFeedback = describeQualityIssues(qualityAssessment, 8);
-                lastError = `Outline quality gate failed: ${qualityFeedback}`;
-                lastFailureReason = 'quality';
-                log.warn(
-                  `Outline quality gate rejected attempt ${attempt}/${MAX_STREAM_RETRIES + 1} (score=${qualityAssessment.score}): ${qualityFeedback}`,
-                );
-                if (attempt <= MAX_STREAM_RETRIES) {
-                  const retryEvent = JSON.stringify({
-                    type: 'retry',
-                    attempt,
-                    maxAttempts: MAX_STREAM_RETRIES + 1,
-                    reason: 'quality',
-                  });
-                  controller.enqueue(encoder.encode(`data: ${retryEvent}\n\n`));
-                  parsedOutlines = [];
-                  continue;
-                }
-                parsedOutlines = [];
-                break;
+              // OpenMAIC parity: no quality gate, outline repair, or evidence
+              // convergence. Keep the parsed outlines as-is and exit the loop.
+              break;
               }
 
               // Empty result — retry if we have attempts left
@@ -1098,11 +962,7 @@ Return a completely revised outline. Do not merely rename the previous scenes.`
           }
 
           if (parsedOutlines.length > 0) {
-            const qualityOutlines = contentEngineV3Active
-              ? parsedOutlines
-              : qualityGateEnabled
-                ? fortifyOutlinesForRelease(normalizeQualityFirstOutlines(parsedOutlines)).outlines
-                : parsedOutlines;
+            const qualityOutlines = parsedOutlines;
             // Replace sequential gen_img_N/gen_vid_N with globally unique IDs
             const uniquifiedOutlines = uniquifyMediaElementIds(qualityOutlines);
             if (planningRunId && planningLeaseToken) {
