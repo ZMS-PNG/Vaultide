@@ -31,13 +31,10 @@ export { parseJsonResponse, tryParseJson } from './json-repair';
 // Outline generator (Stage 1)
 export { generateSceneOutlinesFromRequirements, applyOutlineFallbacks } from './outline-generator';
 
-// Scene generator (Stage 2)
-export {
-  generateSceneContent,
-  generateSceneActions,
-  createSceneWithActions,
-} from './scene-generator';
-export type { SceneContentOptions, SceneActionsOptions } from './scene-generator';
+// Scene generator (Stage 2) ? official OpenMAIC generation
+export { generateSceneContent, generateSceneActions } from '@openmaic/generation';
+export type { SceneContentOptions, SceneActionsOptions } from '@openmaic/generation';
+export { createSceneWithActions } from './scene-generator';
 
 // Scene builder (standalone)
 export {

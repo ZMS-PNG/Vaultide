@@ -225,7 +225,7 @@ export function makeRegenerateSceneActionsTool(
       // function returns [] immediately.
       const generationContent = toGenerationContent(content);
 
-      const actions = await generateSceneActions(outline, generationContent, aiCallFn, {
+      const actions = await generateSceneActions(outline, generationContent as unknown as Parameters<typeof generateSceneActions>[1], aiCallFn, {
         ctx,
         agents,
         userProfile,

@@ -20,6 +20,10 @@ import type {
   PdfImage,
   ImageMapping,
   UserRequirements,
+  GeneratedSlideContent,
+  GeneratedQuizContent,
+  GeneratedInteractiveContent,
+  GeneratedPBLContent,
 } from '@/lib/types/generation';
 import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
@@ -267,7 +271,7 @@ export async function POST(req: NextRequest) {
     // twice inside one Vercel Function is what previously produced 300s/504
     // failures and unobservable partial courses.
     const MAX_QUALITY_ATTEMPTS = 1;
-    let content: Awaited<ReturnType<typeof generateSceneContent>> = null;
+    let content: GeneratedSlideContent | GeneratedQuizContent | GeneratedInteractiveContent | GeneratedPBLContent | null = null;
     let contentQuality: CourseQualityAssessment | undefined;
     for (let attempt = 1; attempt <= MAX_QUALITY_ATTEMPTS; attempt++) {
       const qualityInstruction =
@@ -282,26 +286,19 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
             }
           : effectiveOutline;
       try {
-        content = await deadline.run(
+        content = (await deadline.run(
           generateSceneContent(attemptOutline, aiCall, {
             assignedImages,
             imageMapping,
-            languageModel: effectiveOutline.type === 'pbl' ? languageModel : undefined,
             visionEnabled: hasVision,
             generatedMediaMapping,
             agents,
             languageDirective,
-            thinkingConfig: runtimeThinkingConfig,
             targetLanguage: userLocale || undefined,
             userRequirements: requirements,
-            sourceContext,
-            learnerKnowledgeContext,
             allowProceduralSkill: vocationalActive,
-            durableFirstPass,
-            abortSignal: activeProviderDeadline.signal,
-            maxOutputTokens,
           }),
-        );
+        )) as unknown as NonNullable<typeof content>;
       } catch (error) {
         if (
           !durableFirstPass ||

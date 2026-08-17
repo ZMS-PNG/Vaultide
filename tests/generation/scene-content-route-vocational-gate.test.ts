@@ -55,7 +55,9 @@ describe('scene-content vocational gate', () => {
     expect(body.effectiveOutline.widgetOutline.task).toBeUndefined();
     expect(body.content.widgetType).toBe('diagram');
     expect(body.content.widgetConfig.type).toBe('diagram');
-    expect(callLLMMock).not.toHaveBeenCalled();
+    // OpenMAIC parity: the model is called to generate the downgraded diagram
+    // content; the deterministic no-model procedural path no longer exists.
+    expect(callLLMMock).toHaveBeenCalledTimes(1);
   });
 
   test('flag off without requirements defaults to safe false for persisted procedural-skill outlines', async () => {

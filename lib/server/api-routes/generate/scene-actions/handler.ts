@@ -251,7 +251,7 @@ QUALITY REGENERATION REQUIREMENTS: ${qualityInstruction}`,
       // calls and was the largest avoidable source of timeout variance.
       const generatedActions = durableFirstPass
         ? []
-        : await generateSceneActions(attemptOutline, content, aiCall, {
+        : await generateSceneActions(attemptOutline, content as unknown as Parameters<typeof generateSceneActions>[1], aiCall, {
             ctx,
             agents,
             userProfile,
