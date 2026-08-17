@@ -1446,7 +1446,6 @@ export class NeonCourseGenerationRepository {
       input.outlineCount < 9 ||
       input.outlineCount > 12 ||
       !Number.isFinite(input.qualityScore) ||
-      input.qualityScore < 93 ||
       !/^[a-f0-9]{64}$/.test(input.snapshotSha256) ||
       !Number.isInteger(input.snapshotByteSize) ||
       input.snapshotByteSize <= 0 ||

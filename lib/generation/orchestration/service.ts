@@ -6,6 +6,7 @@ import {
 } from '@/lib/learning/domain/learning-context-pack';
 import { NeonKnowledgeSnapshotRepository } from '@/lib/learning/adapters/neon/knowledge-snapshot-repository';
 import { isV3OutlineSet } from '@/lib/generation/outline-release-contract';
+import { shouldEnforceCourseQuality } from '@/lib/generation/course-quality';
 import { NeonCourseGenerationRepository } from './repository';
 import { courseQueueConfigured, publishCourseGenerationStep } from './queue';
 import { freezeCourseGenerationPolicy } from './model-policy';
@@ -118,9 +119,13 @@ export class CourseGenerationService {
       ? await planningService.compileContext(planningRun)
       : undefined;
     const useV3OutlineContract = isV3OutlineSet(input.jobInput.outlines);
-    const outlineConvergence = useV3OutlineContract
-      ? undefined
-      : convergeCourseInputOutlines(input.jobInput.outlines);
+    // OpenMAIC parity: skip the deterministic outline repair/fortify at the
+    // job boundary when the quality gate is disabled, keeping the reviewed
+    // outlines as-is (the repair injected verbose per-scene boilerplate).
+    const outlineConvergence =
+      useV3OutlineContract || !shouldEnforceCourseQuality()
+        ? undefined
+        : convergeCourseInputOutlines(input.jobInput.outlines);
     const canonicalJobInput: CourseGenerationJobInput = {
       ...input.jobInput,
       ...(planningRun
